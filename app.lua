@@ -1,0 +1,54 @@
+local lapis = require("lapis")
+local app = lapis.Application()
+local bcrypt = require("bcrypt")
+local db = require("lapis.db")
+
+function print_r ( t )  
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
+    end
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
+end
+
+local function verifyLogin(username, password)
+    local dbPassword = db.query("SELECT password FROM users WHERE displayname = ?", username)
+    local verified = bcrypt.verify(password, dbPassword[1].password)
+    password = nil
+    return verified
+end
+
+
+app:get("/", function()
+    return "Welcome to DailyMath" .. tostring(verifyLogin("admin", "MMG8Z9b4qQuZrpDy")) .. bcrypt.digest("PAUL", 4)
+end)
+
+
+
+return app
