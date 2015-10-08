@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+	<title><%= title or "PLEASE SET self.title in route" %></title>
+</head>
+<body>
+	<h1><a href="/" rel="home">dailyMath</a></h1>
+	<nav>
+	<ul>
+		<li><a href='/about'>About</a></li>
+	</ul>
+	</nav>
+	<% content_for("inner") %>
+</body>
+</html>

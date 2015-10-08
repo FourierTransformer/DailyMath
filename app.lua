@@ -1,7 +1,16 @@
 local lapis = require("lapis")
 local app = lapis.Application()
+
+-- enable etlua and set the base template
+app:enable("etlua")
+app.layout = require("views.baseLayout")
+
+-- bcrypt for encryption
 local bcrypt = require("bcrypt")
+
+-- and db to access the database layer
 local db = require("lapis.db")
+
 
 function print_r ( t )  
     local print_r_cache={}
@@ -45,8 +54,15 @@ local function verifyLogin(username, password)
 end
 
 
-app:get("/", function()
-    return "Welcome to DailyMath" .. tostring(verifyLogin("admin", "MMG8Z9b4qQuZrpDy")) .. bcrypt.digest("PAUL", 4)
+app:match("/", function(self)
+    self.title = "dailyMath - Where a Problem a Day Keeps Alzheimer's at Bay!"
+    self.text = db.query("SELECT problem FROM problems where date = ?", os.date())[1].problem
+    return { render = "hello" }
+    --return "Welcome to DailyMath" .. tostring(verifyLogin("admin", "MMG8Z9b4qQuZrpDy")) .. bcrypt.digest("PAUL", 4)
+end)
+
+app:match("about", "/about", function(self)
+  return { render = true }
 end)
 
 
