@@ -53,12 +53,73 @@ local function verifyLogin(username, password)
     return verified
 end
 
-
+-- setup that homepage yo
 app:match("/", function(self)
     self.title = "dailyMath - Where a Problem a Day Keeps Alzheimer's at Bay!"
-    self.text = db.query("SELECT problem FROM problems where date = ?", os.date())[1].problem
+    local query = db.query("SELECT problem FROM problems where date = ?", os.date())
+    if query ~= nil and query[1] ~= nil then
+        self.text = query[1].problem
+    else
+        self.text = "Sorry, there is no problem today..."
+    end
     return { render = "hello" }
     --return "Welcome to DailyMath" .. tostring(verifyLogin("admin", "MMG8Z9b4qQuZrpDy")) .. bcrypt.digest("PAUL", 4)
+end)
+
+local function getProblem(date)
+    local date = date or os.date("%F")
+    local query = db.query([[SELECT problem, categories.type, level FROM problems 
+                            LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
+                            WHERE date = ? AND approved = true]], date)
+    if query ~= nil and query[1] ~= nil then
+        return {layout = false, json = {problems = query}}
+    else
+        return {status = 404, layout = false, json = {error = "There are no problems available for that date."}}
+    end
+end
+
+local function getAnswer(date)
+    local date = date or os.date("%F")
+    local query = db.query("SELECT answer, level FROM problems WHERE date = ? AND approved = true", date)
+    if query ~= nil and query[1] ~= nil then
+        return {layout = false, json = {answers = query}}
+    else
+        return {status = 404, layout = false, json = { error = "There is no answer available for that date." } }
+    end
+end
+
+local function getHint(date)
+    local date = date or os.date("%F")
+    local query = db.query("SELECT hint, level FROM problems WHERE date = ? AND approved = true", date)
+    if query ~= nil and query[1] ~= nil then
+        return {layout = false, query[1].answer}
+    else
+        return {status = 404, layout = false, json = { error = "There is no hint available for that date."} }
+    end
+end
+
+-- get the answer for today
+app:get("/api/v1/answers/today", function(self)
+    return getAnswer()
+end)
+
+-- get the answer for any specific date
+app:get("/api/v1/answers/:date", function(self)
+    -- TODO: actually check if date is in the right format and error gracefully if it isnt
+    -- TODO: potentially add filter for level
+    return getAnswer(self.params.date)
+end)
+
+-- get the answer for today
+app:get("/api/v1/problems/today", function(self)
+    return getProblem()
+end)
+
+-- get the answer for any specific date
+app:get("/api/v1/problems/:date", function(self)
+    -- TODO: actually check if date is in the right format and error gracefully if it isnt
+    -- TODO: potentially add filter for level
+    return getProblem(self.params.date)
 end)
 
 app:match("about", "/about", function(self)
