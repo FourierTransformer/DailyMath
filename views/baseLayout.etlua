@@ -3,6 +3,7 @@
 <html>
 <head>
 	<title><%= title or "PLEASE SET self.title in route" %></title>
+	<script src="/static/lib/mithril.min.js"></script>
 </head>
 <body>
 	<h1><a href="/" rel="home">dailyMath</a></h1>
