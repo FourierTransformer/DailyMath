@@ -1,3 +1,0 @@
-<div class="my_page">
-	Today's Problem: <%= text %>
-</div>

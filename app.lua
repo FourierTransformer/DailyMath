@@ -56,19 +56,13 @@ end
 -- setup that homepage yo
 app:match("/", function(self)
     self.title = "dailyMath - Where a Problem a Day Keeps Alzheimer's at Bay!"
-    local query = db.query("SELECT problem FROM problems where date = ?", os.date())
-    if query ~= nil and query[1] ~= nil then
-        self.text = query[1].problem
-    else
-        self.text = "Sorry, there is no problem today..."
-    end
-    return { render = "hello" }
+    return { render = "index" }
     --return "Welcome to DailyMath" .. tostring(verifyLogin("admin", "MMG8Z9b4qQuZrpDy")) .. bcrypt.digest("PAUL", 4)
 end)
 
 local function getProblem(date)
     local date = date or os.date("%F")
-    local query = db.query([[SELECT problem, categories.type, level FROM problems 
+    local query = db.query([[SELECT problem, categories.type, level, answer, hint, answer_desc FROM problems 
                             LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
                             WHERE date = ? AND approved = true]], date)
     if query ~= nil and query[1] ~= nil then

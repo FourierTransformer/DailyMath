@@ -1,0 +1,30 @@
+<div id = "app"></div>
+<!-- the api returns the answer with the question to make my life a lot easier. Sure, you can find the answer here, but then what's the point in doing daily math? -->
+<script>
+	var dailyMath = {
+		controller: function() {
+			this.data = m.request({method: "GET", url: "/api/v1/problems/today"});
+			this.level = 0;
+			this.levels = ["Go to College Level", "Go back to High School"]
+			this.showHint = false;
+			this.toggleLevel = function() {
+				this.level == 1 ? this.level = 0 : this.level = 1;
+				this.showHint = false;
+			};
+			this.toggleHint = function() {
+				this.showHint == true ? this.showHint = false : this.showHint = true;
+			}
+		},
+		view: function(ctrl) {
+			return [
+				m("h2", "Today's Problem"),
+				m("h3", ctrl.data().problems[ctrl.level].type),
+				m("button", {onclick: ctrl.toggleLevel.bind(ctrl)}, ctrl.levels[ctrl.level]),
+				m("p", ctrl.data().problems[ctrl.level].problem),
+				m("button", {onclick: ctrl.toggleHint.bind(ctrl)}, ctrl.showHint ? "Hide Hint" : "Show Hint"),
+				m("p", ctrl.showHint ? ctrl.data().problems[ctrl.level].hint : "")
+			];
+		}
+	}
+	m.module(document.getElementById("app"), dailyMath);
+</script>
