@@ -20,8 +20,21 @@
 			this.toggleHint = function() {
 				this.user.showHint == true ? this.user.showHint = false : this.user.showHint = true;
 			};
+			this.hintButtonDisplay = function() {
+				if (this.problem.data().problems[this.user.level].hint) {
+					return "block";
+				} else {
+					return "none";
+				}
+			}
 			this.submitAnswer = function() {
-				alert('"'+this.user.answer()+' for Gondor!"');
+				console.log(this.user.answer());
+				console.log(this.problem.data().problems[this.user.level].answer);
+				if (this.user.answer() == this.problem.data().problems[this.user.level].answer) {
+					alert("That is correct!");
+				} else {
+					alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
+				}
 			}
 			this.changeLevel = function(newLevel) {
 				this.user.level = newLevel;
@@ -37,7 +50,8 @@
 				m("p", ctrl.problem.data().problems[ctrl.user.level].problem),
 				m("input[type=text]", {onchange: m.withAttr("value", ctrl.user.answer)}),
 				m("button", { onclick: ctrl.submitAnswer.bind(ctrl)}, "Submit"),
-				m("button", {onclick: ctrl.toggleHint.bind(ctrl)}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
+				// m("label", {class: "button", for: "modal_1"}, "Submit"),
+				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
 				m("p", ctrl.user.showHint ? ctrl.problem.data().problems[ctrl.user.level].hint : "")
 			];
 		}
@@ -46,3 +60,24 @@
 </script>
 
 
+<div class="modal">
+  <input id="modal_1" type="checkbox" />
+  <label for="modal_1" class="overlay"></label>
+  <article>
+    <header>
+      <h3 style="color: red;">Incorrect!</h3>
+      <label for="modal_1" class="close">&times;</label>
+    </header>
+    <section class="content">
+      Sorry, but that is not the correct answer
+    </section>
+    <footer>
+      <label for="modal_1" class="button">
+        Try Again
+      </label>
+      <label for="modal_1" class="button dangerous">
+        Show Answer
+      </label>
+    </footer>
+  </article>
+</div>
