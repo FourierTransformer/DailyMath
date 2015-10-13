@@ -2,29 +2,47 @@
 <!-- the api returns the answer with the question to make my life a lot easier. Sure, you can find the answer here, but then what's the point in doing daily math? -->
 <script>
 	var dailyMath = {
-		controller: function() {
-			this.data = m.request({method: "GET", url: "/api/v1/problems/today"});
+		user: function() {
+			this.answer = m.prop('');
 			this.level = 0;
-			this.levels = ["Go to College Level", "Go back to High School"]
 			this.showHint = false;
-			this.toggleLevel = function() {
-				this.level == 1 ? this.level = 0 : this.level = 1;
-				this.showHint = false;
-			};
+		},
+		data: function() {
+			this.data = m.request({method: "GET", url: "/api/v1/problems/today"});
+			this.levels = [
+				{title: "High School", level: 0},
+				{title: "College", level: 1}
+			];
+		},
+		controller: function() {
+			this.user = new dailyMath.user();
+			this.problem = new dailyMath.data();
 			this.toggleHint = function() {
-				this.showHint == true ? this.showHint = false : this.showHint = true;
+				this.user.showHint == true ? this.user.showHint = false : this.user.showHint = true;
+			};
+			this.submitAnswer = function() {
+				alert('"'+this.user.answer()+' for Gondor!"');
+			}
+			this.changeLevel = function(newLevel) {
+				this.user.level = newLevel;
+				this.user.showHint = false;
 			}
 		},
 		view: function(ctrl) {
 			return [
-				m("h2", "Today's Problem"),
-				m("h3", ctrl.data().problems[ctrl.level].type),
-				m("button", {onclick: ctrl.toggleLevel.bind(ctrl)}, ctrl.levels[ctrl.level]),
-				m("p", ctrl.data().problems[ctrl.level].problem),
-				m("button", {onclick: ctrl.toggleHint.bind(ctrl)}, ctrl.showHint ? "Hide Hint" : "Show Hint"),
-				m("p", ctrl.showHint ? ctrl.data().problems[ctrl.level].hint : "")
+				m("h2", ctrl.problem.data().problems[ctrl.user.level].type),
+				ctrl.problem.levels.map(function(selectedLevel) {
+		            return m("label", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title);
+		        }),
+				m("p", ctrl.problem.data().problems[ctrl.user.level].problem),
+				m("input[type=text]", {onchange: m.withAttr("value", ctrl.user.answer)}),
+				m("button", { onclick: ctrl.submitAnswer.bind(ctrl)}, "Submit"),
+				m("button", {onclick: ctrl.toggleHint.bind(ctrl)}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
+				m("p", ctrl.user.showHint ? ctrl.problem.data().problems[ctrl.user.level].hint : "")
 			];
 		}
 	}
 	m.module(document.getElementById("app"), dailyMath);
 </script>
+
+

@@ -5,6 +5,7 @@
 	<title><%= title or "PLEASE SET self.title in route" %></title>
 	<script src="/static/lib/mithril.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/plugins.min.css">
 </head>
 <body>
 	<h1><a href="/" rel="home">dailyMath</a></h1>
