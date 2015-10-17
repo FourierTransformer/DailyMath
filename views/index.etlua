@@ -1,27 +1,70 @@
 <div id = "app"></div>
 <!-- the api returns the answer with the question to make my life a lot easier. Sure, you can find the answer here, but then what's the point in doing daily math? -->
 <script>
-	var dailyMath = {
-		user: function() {
+	// from dave's guide to mithril
+	// http://ratfactor.com/daves-guide-to-mithril-js?/mordor
+	var requestWrapper = function(opts){
+		return new function(){
+			me = this;
+			me.opts = opts;
+			me.success = me.loading = me.failed = false;
+			me.errorStatus = me.errorBody = '';
+			me.data = null;
+			me.opts.background = true;
+			me.opts.extract = function(xhr){
+				if(xhr.status >= 300){ // error!
+					me.failed = true;	me.success = me.loading = false;
+					me.errorStatus = xhr.status;
+					me.errorBody = xhr.responseText;
+					m.redraw();
+				}
+				return xhr.responseText;
+			}
+			me.go = function(){
+				me = me;
+				me.loading = true; me.success = me.failed = false;
+				m.request(me.opts)
+				.then(function(mydata){ // success!
+					me.success = true; me.failed = me.loading = false;
+					me.data = mydata;
+					m.redraw();
+				});
+			}
+		}
+	}
+
+	var dailyMath = {};
+		dailyMath.user = function() {
 			this.answer = m.prop('');
 			this.level = 0;
 			this.showHint = false;
-		},
-		data: function() {
-			this.data = m.request({method: "GET", url: "/api/v1/problems/today"});
-			this.levels = [
-				{title: "High School", level: 0},
-				{title: "College", level: 1}
-			];
-		},
-		controller: function() {
+		};
+
+		dailyMath.levels = [
+			{title: "High School", level: 0},
+			{title: "College", level: 1}
+		];
+
+		dailyMath.loadError = null;
+		dailyMath.load = function() {
+			return m.request({method: "GET", url: "/api/v1/problems/2015-10-15",
+			// return m.request({method: "GET", url: "/api/v1/problems/today",
+				// the response here is correct, but I'm not entirely certain what happens on the return
+				unwrapError: function(response) {
+					console.log(response.error);
+					dailyMath.loadError = response.error;
+			        return response.error;
+			    }
+		})}
+
+		dailyMath.controller = function() {
 			this.user = new dailyMath.user();
-			this.problem = new dailyMath.data();
+			this.problem = dailyMath.load();
 			this.toggleHint = function() {
 				this.user.showHint == true ? this.user.showHint = false : this.user.showHint = true;
 			};
 			this.hintButtonDisplay = function() {
-				if (this.problem.data().problems[this.user.level].hint) {
+				if (this.problem().problems[this.user.level].hint) {
 					return "block";
 				} else {
 					return "none";
@@ -29,8 +72,8 @@
 			}
 			this.submitAnswer = function() {
 				console.log(this.user.answer());
-				console.log(this.problem.data().problems[this.user.level].answer);
-				if (this.user.answer() == this.problem.data().problems[this.user.level].answer) {
+				console.log(this.problem().problems[this.user.level].answer);
+				if (this.user.answer() == this.problem().problems[this.user.level].answer) {
 					alert("That is correct!");
 				} else {
 					alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
@@ -40,22 +83,38 @@
 				this.user.level = newLevel;
 				this.user.showHint = false;
 			}
-		},
-		view: function(ctrl) {
-			return [
-				m("h2", ctrl.problem.data().problems[ctrl.user.level].type),
-				ctrl.problem.levels.map(function(selectedLevel) {
-		            return m("label", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title);
-		        }),
-				m("p", ctrl.problem.data().problems[ctrl.user.level].problem),
-				m("input[type=text]", {onchange: m.withAttr("value", ctrl.user.answer)}),
-				m("button", { onclick: ctrl.submitAnswer.bind(ctrl)}, "Submit"),
-				// m("label", {class: "button", for: "modal_1"}, "Submit"),
-				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
-				m("p", ctrl.user.showHint ? ctrl.problem.data().problems[ctrl.user.level].hint : "")
-			];
 		}
-	}
+
+		dailyMath.view = function(ctrl) {
+			if (dailyMath.loadError) {
+				// I unfortunately couldn't get the error message to show from the load function
+				// so I set a variable instead. I might be able to make the load() function smarter
+				// to handle this. But right now, I am good.
+				return m("p", dailyMath.loadError)
+			} else {
+			return [
+				m(".controls",
+				m("h2", ctrl.problem().problems[ctrl.user.level].type),
+				m("ul",
+				dailyMath.levels.map(function(selectedLevel) {
+		            return m("li",
+		            		m("a", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
+		            		);
+		        }))),
+		        m(".problem",
+				m("p", ctrl.problem().problems[ctrl.user.level].problem)),
+				m("label", {for: "answer"}, "Answer:"),
+				m("form",
+					m("input[type=text]", {id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", ctrl.user.answer)}),
+					// m("button", { onclick: ctrl.submitAnswer.bind(ctrl)}, "Submit")
+					m("input", { type: "submit", value:"Submit", onclick: ctrl.submitAnswer.bind(ctrl)})
+					// m("label", {class: "button", for: "modal_1"}, "Submit"),
+				),
+				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
+				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
+			]; }
+		}
+
 	m.module(document.getElementById("app"), dailyMath);
 </script>
 

@@ -1,0 +1,66 @@
+body {
+	max-width: 500px;
+	margin: 0 auto;
+}
+
+.header {
+	text-align: center;	
+}
+
+#app label {
+	display: none;
+}
+
+.controls {
+	overflow: auto;
+}
+
+.controls h2 {
+	float: left;
+}
+
+/* NOTE: reusing styles. could get dicey moving forward */
+ul {
+	float: right;
+}
+
+li {
+	display: inline;
+}
+
+li:after {
+	content: " | ";
+}
+
+li:last-child:after {
+	content: "";
+}
+
+.problem {
+	padding: 1em;
+    background-color: #eee;
+    border-radius: 1em;
+    margin: 1em 0;
+}
+
+#app form {
+	vertical-align: top;
+}
+
+#answer {
+	width: 82%;
+}
+
+.footer p {
+	float: left;
+}
+
+/* MOBILE READY */
+@media screen and (max-width: 500px) {
+	body {
+		margin: 0 1em;
+	}
+	#answer {
+		width: 75%;
+	}
+}

@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <html>
 <head>
 	<title><%= title or "PLEASE SET self.title in route" %></title>
-	<script src="/static/lib/mithril.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/plugins.min.css">
+	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<script src="/static/lib/mithril.min.js"></script>
 </head>
 <body>
-	<h1><a href="/" rel="home">dailyMath</a></h1>
-	<ul>
-		<li><a href='/about'>About</a></li>
-	</ul>
+	<div class="header">
+		<h1><a href="/" rel="home">DailyMath</a></h1>
+	</div>
 	<% content_for("inner") %>
+	
+	<div class="footer">
+		<p>&copy; 2015 DailyMath</p>
+		<ul>
+			<li><a href="/about">About</a></li>
+			<li><a href="/feedback">Feedback</a></li>
+		</ul>
+	</div>
+
 </body>
 </html>
