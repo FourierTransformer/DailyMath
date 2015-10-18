@@ -36,7 +36,20 @@ li:last-child:after {
 	content: "";
 }
 
-.problem {
+ul button {
+    background: 0;
+    padding: 0;
+    margin: 0;
+    color: #0074d9;
+}
+
+ul span.current {
+	font-weight: bold;
+	color: #000;
+	vertical-align: middle;
+}
+
+#problem {
 	padding: 1em;
     background-color: #eee;
     border-radius: 1em;

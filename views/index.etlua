@@ -1,38 +1,6 @@
 <div id = "app"></div>
 <!-- the api returns the answer with the question to make my life a lot easier. Sure, you can find the answer here, but then what's the point in doing daily math? -->
 <script>
-	// from dave's guide to mithril
-	// http://ratfactor.com/daves-guide-to-mithril-js?/mordor
-	var requestWrapper = function(opts){
-		return new function(){
-			me = this;
-			me.opts = opts;
-			me.success = me.loading = me.failed = false;
-			me.errorStatus = me.errorBody = '';
-			me.data = null;
-			me.opts.background = true;
-			me.opts.extract = function(xhr){
-				if(xhr.status >= 300){ // error!
-					me.failed = true;	me.success = me.loading = false;
-					me.errorStatus = xhr.status;
-					me.errorBody = xhr.responseText;
-					m.redraw();
-				}
-				return xhr.responseText;
-			}
-			me.go = function(){
-				me = me;
-				me.loading = true; me.success = me.failed = false;
-				m.request(me.opts)
-				.then(function(mydata){ // success!
-					me.success = true; me.failed = me.loading = false;
-					me.data = mydata;
-					m.redraw();
-				});
-			}
-		}
-	}
-
 	var dailyMath = {};
 		dailyMath.user = function() {
 			this.answer = m.prop('');
@@ -60,6 +28,7 @@
 		dailyMath.controller = function() {
 			this.user = new dailyMath.user();
 			this.problem = dailyMath.load();
+			this.mathProblem = null;
 			this.toggleHint = function() {
 				this.user.showHint == true ? this.user.showHint = false : this.user.showHint = true;
 			};
@@ -82,10 +51,14 @@
 			this.changeLevel = function(newLevel) {
 				this.user.level = newLevel;
 				this.user.showHint = false;
+				// TODO: this should probably be defined elsewhere as well... boooo
+				this.mathProblem = MathJax.Hub.getAllJax("problem")[0];
+				MathJax.Hub.Queue(["Text", this.mathProblem, this.problem().problems[this.user.level].problem]);
 			}
 		}
 
 		dailyMath.view = function(ctrl) {
+
 			if (dailyMath.loadError) {
 				// I unfortunately couldn't get the error message to show from the load function
 				// so I set a variable instead. I might be able to make the load() function smarter
@@ -98,15 +71,14 @@
 				m("ul",
 				dailyMath.levels.map(function(selectedLevel) {
 		            return m("li",
-		            		m("a", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
+		            		m(selectedLevel.level == ctrl.user.level ? "span.current" : "button", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
 		            		);
 		        }))),
-		        m(".problem",
-				m("p", ctrl.problem().problems[ctrl.user.level].problem)),
+		        m("#problem",
+				m("p", ctrl.mathProblem ? "" : "$" + ctrl.problem().problems[ctrl.user.level].problem + "$")),
 				m("label", {for: "answer"}, "Answer:"),
 				m("form",
 					m("input[type=text]", {id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", ctrl.user.answer)}),
-					// m("button", { onclick: ctrl.submitAnswer.bind(ctrl)}, "Submit")
 					m("input", { type: "submit", value:"Submit", onclick: ctrl.submitAnswer.bind(ctrl)})
 					// m("label", {class: "button", for: "modal_1"}, "Submit"),
 				),
@@ -117,7 +89,6 @@
 
 	m.module(document.getElementById("app"), dailyMath);
 </script>
-
 
 <div class="modal">
   <input id="modal_1" type="checkbox" />
