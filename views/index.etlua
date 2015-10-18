@@ -51,14 +51,22 @@
 			this.changeLevel = function(newLevel) {
 				this.user.level = newLevel;
 				this.user.showHint = false;
+				// MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 				// TODO: this should probably be defined elsewhere as well... boooo
-				this.mathProblem = MathJax.Hub.getAllJax("problem")[0];
-				MathJax.Hub.Queue(["Text", this.mathProblem, this.problem().problems[this.user.level].problem]);
+				// this.mathProblem = MathJax.Hub.getAllJax("problem")[0];
+				// this.mathProblem.Remove();
+				// MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+				// MathJax.Hub.Queue(["Text", this.mathProblem, this.problem().problems[this.user.level].problem]);
 			}
+
+			this.reloadMath = function(el, isInit) {
+				while (el.children.length > 0) el.removeChild(el.children[0]);
+  				if (isInit) MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+			}
+
 		}
 
 		dailyMath.view = function(ctrl) {
-
 			if (dailyMath.loadError) {
 				// I unfortunately couldn't get the error message to show from the load function
 				// so I set a variable instead. I might be able to make the load() function smarter
@@ -75,7 +83,7 @@
 		            		);
 		        }))),
 		        m("#problem",
-				m("p", ctrl.mathProblem ? "" : "$" + ctrl.problem().problems[ctrl.user.level].problem + "$")),
+				m("p", {config: ctrl.reloadMath}, ctrl.problem().problems[ctrl.user.level].problem)),
 				m("label", {for: "answer"}, "Answer:"),
 				m("form",
 					m("input[type=text]", {id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", ctrl.user.answer)}),
