@@ -5,8 +5,11 @@ local app = lapis.Application()
 app:enable("etlua")
 app.layout = require("views.baseLayout")
 
--- and db to access the database layer
+-- and lapis.db to access the database
 local db = require("lapis.db")
+
+-- get some caching up in here!
+local cached = require("lapis.cache").cached
 
 -- setup that homepage yo
 app:match("/", function(self)
@@ -38,8 +41,9 @@ app:get("/api/v1/problems/:date", function(self)
     return getProblem(self.params.date)
 end)
 
-app:match("about", "/about", function(self)
-  return { render = true }
-end)
+app:match("about", "/about", cached(function(self)
+    self.title = "DailyMath - About"
+    return { render = true }
+end))
 
 return app

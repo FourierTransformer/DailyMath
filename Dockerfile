@@ -58,7 +58,7 @@ RUN wget -qO- http://openresty.org/download/ngx_openresty-${OPENRESTY_VERSION}.t
 # install luarocks
 RUN wget -qO- http://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz | tar xvz -C /tmp/ \
  && cd /tmp/luarocks-* \
- && ./configure --prefix=/opt/openresty/luajit \
+ && ./configure \
     --with-lua=/opt/openresty/luajit/ \
     --lua-suffix=jit-2.1.0-alpha \
     --with-lua-include=/opt/openresty/luajit/include/luajit-2.1 \
@@ -70,14 +70,16 @@ RUN ldconfig
 # install some rocks
 RUN mkdir /app
 ADD *.rockspec /app/
-RUN /opt/openresty/luajit/bin/luarocks build --only-deps /app/*.rockspec
+RUN luarocks build --only-deps /app/*.rockspec
 
 # FINAL SETUP
 WORKDIR /app
 ADD *.lua /app/
-ADD *.h /app/
+ADD views /app/views
+ADD static /app/static
+ADD mime.types /app/
 ADD nginx.conf /app/
+RUN ls
 EXPOSE 80
 
-#CMD nginx -p /app -c /app/nginx.conf
-CMD lapis server
+CMD lapis server development

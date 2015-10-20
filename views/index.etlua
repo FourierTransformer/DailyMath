@@ -68,6 +68,8 @@
 				return m("p", dailyMath.loadError)
 			} else {
 			return [
+
+				// THE CONTROLS AND STUFF
 				m(".controls",
 				m("h2", ctrl.problem().problems[ctrl.user.level].type),
 				m("ul",
@@ -75,15 +77,25 @@
 		            return m("li",
 		            		m(selectedLevel.level == ctrl.user.level ? "span.current" : "button", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
 		            		);
-		        }))),
+		        }))
+		        ),
+
+				// Error message
+		        m("h3", "NOTE: DailyMath is in demo mode. This problem will not change tomorrow."),
+
+				// DISPLAYING THE PROBLEM
 		        m("#problem",
 				m("p", {config: ctrl.reloadMath}, ctrl.problem().problems[ctrl.user.level].problem)),
+				
+				// THE ANSWER FORM
 				m("label", {for: "answer"}, "Answer:"),
 				m("form",
 					m("input[type=text]", {id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", ctrl.user.answer)}),
 					m("input", { type: "submit", value:"Submit", onclick: ctrl.submitAnswer.bind(ctrl)})
 					// m("label", {class: "button", for: "modal_1"}, "Submit"),
 				),
+				
+				//HINT
 				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
 				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
 			]; }
@@ -92,6 +104,7 @@
 	m.module(document.getElementById("app"), dailyMath);
 </script>
 
+<!-- TODO: replace the alert with a modal -->
 <div class="modal">
   <input id="modal_1" type="checkbox" />
   <label for="modal_1" class="overlay"></label>

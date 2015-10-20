@@ -25,7 +25,8 @@
 		<p>&copy; 2015 DailyMath</p>
 		<ul>
 			<li><a href="/about">About</a></li>
-			<li><a href="/feedback">Feedback</a></li>
+			<!-- Once people are open to it, then I'll build up the Feedback page -->
+			<!-- <li><a href="/feedback">Feedback</a></li> -->
 		</ul>
 	</div>
 
