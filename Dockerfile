@@ -82,4 +82,4 @@ ADD nginx.conf /app/
 RUN ls
 EXPOSE 80
 
-CMD lapis server development
+CMD lapis server production
