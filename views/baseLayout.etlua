@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
 <html>
 <head>
 	<title><%= title or "PLEASE SET self.title in route" %></title>
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
-	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/plugins.min.css">
 	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<% if mainPage then %>
 	<script src="/static/lib/mithril.min.js"></script>
 	<script type="text/x-mathjax-config">
 	  MathJax.Hub.Config({
@@ -13,7 +14,8 @@
 	    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
 	  });
 	</script>
-	<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+	<script async src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+	<% end %>
 </head>
 <body>
 	<div class="header">
