@@ -55,9 +55,4 @@ api:get("/api/v1/problems/:date", function(self)
     return getProblem(self.params.date)
 end)
 
-api:get("about", "/about", function(self)
-    self.title = "DailyMath - About"
-    return { render = true }
-end)
-
 return api

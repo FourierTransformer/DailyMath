@@ -25,4 +25,9 @@ app:match("/", function(self)
     return { render = "index" }
 end)
 
+app:match("about", "/about", function(self)
+    self.title = "DailyMath - About"
+    return { render = true }
+end)
+
 return app
