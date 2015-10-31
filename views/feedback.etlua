@@ -1,0 +1,38 @@
+<script>
+var recaptchaChecked = false;
+function changeSubmitColor() {
+    // check if there's anything in the feedback area
+    if (document.getElementById("feedback").value) {
+        document.getElementById('feedback').style.borderColor = "";
+    } else {
+        document.getElementById('feedback').style.borderColor = "red";
+    }
+
+    // check for captcha and that there's something in the feedback form
+    if (recaptchaChecked && document.getElementById("feedback").value) {
+        document.getElementById('submitButton').removeAttribute('disabled');
+    } else if (!document.getElementById("feedback").value) {
+        document.getElementById('submitButton').disabled = true;
+    }
+};
+function recaptchaCallback() {
+    recaptchaChecked = true;
+    changeSubmitColor();
+};
+</script>
+<h2>Feedback</h2>
+<p>Is there an issue with today's problem? Found a bug? Have an idea for a question? Want to help out? Whatever it is - we want to hear about it! <br> Note: Only the "Feedback" field is required.</p>
+<form method="POST" action="/feedback" id="feedbackForm">
+    <label for="name">Name</label>
+    <input type="text" id="name">
+
+    <label for="email">Email</label>
+    <input type="email" id="email">
+
+    <label for="feedback">Feedback*</label>
+    <textarea rows="8" form="feedbackForm" id="feedback" onblur="changeSubmitColor()" onkeyup="changeSubmitColor()" required></textarea>
+
+    <input type="hidden" name="csrf_token" value="<%= csrf_token %>">
+    <div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LeF3A8TAAAAAHR3Q5KOT1D8c5pmtZQIUk_gim0c"></div>
+    <input type="submit" id="submitButton" value="Submit" disabled>
+</form>
