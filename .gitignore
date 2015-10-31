@@ -2,4 +2,4 @@ config.lua
 logs/
 *_temp/
 nginx.conf.compiled
-.node_modules/
+node_modules/
