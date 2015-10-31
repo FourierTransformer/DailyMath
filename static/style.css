@@ -72,6 +72,10 @@ input, textarea, .g-recaptcha {
 	margin-bottom: 1em;
 }
 
+h2 {
+	padding-bottom: 0;
+}
+
 /* MOBILE READY */
 @media screen and (max-width: 500px) {
 	body {
