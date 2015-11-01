@@ -27,6 +27,25 @@ local function jsonError(titleText, detailText)
     }
 end
 
+local months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+local numberEnds = {"st", "nd", "rd"}
+
+-- date will always come in as YYYY-MM-DD
+local function expandDate(dateString)
+    -- month string
+    local expanded = months[tonumber(string.sub(dateString, 6,7))] .. " "
+
+    -- day number (WITH CORRECT ENDINGS!)
+    expanded = expanded .. string.sub(dateString, 9, 10)
+    local lastNumber = numberEnds[tostring(string.sub, 10, 10)] or "th"
+    expanded = expanded .. lastNumber .. ", "
+
+    -- year
+    expanded = expanded .. string.sub(dateString, 1, 4)
+
+    return expanded
+end
+
 local function getProblem(date)
     -- either use the submitted date or today's date
     local date = date or os.date("%F")
@@ -37,9 +56,13 @@ local function getProblem(date)
     end
 
     -- query the database!
-    local query = db.query([[SELECT problem, categories.type, level, answer, hint, answer_desc FROM problems 
+    local query = db.query([[SELECT problem, categories.type, level, answer, hint, answer_desc, date FROM problems 
                             LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
                             WHERE date = ? AND approved = true]], date)
+
+    for _, v in ipairs(query) do
+        v.date = expandDate(v.date)
+    end
 
     -- return as necessary
     if query ~= nil and query[1] ~= nil then

@@ -70,6 +70,7 @@
 			return [
 
 				// THE CONTROLS AND STUFF
+
 				m(".controls",
 				m("h2", ctrl.problem().problems[ctrl.user.level].type),
 				m("ul",
@@ -79,14 +80,12 @@
 		            		);
 		        }))
 		        ),
-
-				// Error message
-		        m("h3", "NOTE: DailyMath is in demo mode. This problem will not change tomorrow."),
+				//
+				m("p", {style: "margin-top: -.75em; margin-bottom: 1.5em;"}, ctrl.problem().problems[ctrl.user.level].date),
 
 				// DISPLAYING THE PROBLEM
 		        m("#problem",
 				m("p", {config: ctrl.reloadMath}, ctrl.problem().problems[ctrl.user.level].problem)),
-				
 				// THE ANSWER FORM
 				m("form",
 					m("label", {for: "answer"}, "Answer:"),
@@ -94,7 +93,6 @@
 					m("input", { type: "submit", value:"Submit", onclick: ctrl.submitAnswer.bind(ctrl)})
 					// m("label", {class: "button", for: "modal_1"}, "Submit"),
 				),
-				
 				//HINT
 				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
 				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
