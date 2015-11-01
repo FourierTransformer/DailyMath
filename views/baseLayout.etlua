@@ -7,14 +7,9 @@
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
 	<link rel="stylesheet" type="text/css" href="static/style.css">
 	<% if mainPage then %>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
 	<script src="/static/lib/mithril.min.js"></script>
-	<script type="text/x-mathjax-config">
-	  MathJax.Hub.Config({
-	    showProcessingMessages: false,
-	    tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
-	  });
-	</script>
-	<script async src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
 	<% end %>
 	<% if recaptchaRequired then %>
 		<script src='https://www.google.com/recaptcha/api.js'></script>

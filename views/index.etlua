@@ -8,6 +8,13 @@
 			this.showHint = false;
 		};
 
+		dailyMath.renderKatex = function(problem) {
+			var start_pos = problem.indexOf('$') + 1;
+			var end_pos = problem.indexOf('$',start_pos);
+			var text_to_get = problem.substring(start_pos,end_pos)
+			return problem.substring(0, start_pos-1) + katex.renderToString(text_to_get) + problem.substring(end_pos+1)
+		};
+
 		dailyMath.levels = [
 			{title: "High School", level: 0},
 			{title: "College", level: 1}
@@ -85,7 +92,7 @@
 
 				// DISPLAYING THE PROBLEM
 		        m("#problem",
-				m("p", {config: ctrl.reloadMath}, ctrl.problem().problems[ctrl.user.level].problem)),
+				m("p", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))),
 				// THE ANSWER FORM
 				m("form",
 					m("label", {for: "answer"}, "Answer:"),
