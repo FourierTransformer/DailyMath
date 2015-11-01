@@ -56,9 +56,12 @@ local function getProblem(date)
     end
 
     -- query the database!
+    -- NOTE: the "ORDER BY" is only in here because I wrote some bad js
+    -- that assumes high school always comes first...
     local query = db.query([[SELECT problem, categories.type, level, answer, hint, answer_desc, date FROM problems 
                             LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
-                            WHERE date = ? AND approved = true]], date)
+                            WHERE date = ? AND approved = true
+                            ORDER BY level]], date)
 
     for _, v in ipairs(query) do
         v.date = expandDate(v.date)

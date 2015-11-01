@@ -81,7 +81,7 @@
 		        }))
 		        ),
 				//
-				m("p", {style: "margin-top: -.75em; margin-bottom: 1.5em;"}, ctrl.problem().problems[ctrl.user.level].date),
+				m("p#date", ctrl.problem().problems[ctrl.user.level].date),
 
 				// DISPLAYING THE PROBLEM
 		        m("#problem",

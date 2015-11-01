@@ -76,6 +76,11 @@ h2 {
 	padding-bottom: 0;
 }
 
+#date {
+	margin-top: -.75em;
+	margin-bottom: 1.5em;
+}
+
 /* MOBILE READY */
 @media screen and (max-width: 500px) {
 	body {
@@ -83,5 +88,15 @@ h2 {
 	}
 	#answer {
 		width: 75%;
+	}
+	.controls li {
+		display: block;
+		text-align: right;
+	}
+	.controls li:after {
+		content: "";
+	}
+	#date {
+		margin-top: -3em;
 	}
 }
