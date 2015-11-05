@@ -13,6 +13,9 @@
 -- and lapis.db to access the database
 local db = require("lapis.db")
 
+-- gotta handle some of our shared date functions!
+local dateFunctions = require("util.dateFunctions")
+
 -- our submodule loader and subApp
 local subApp = require("util.subAppLoader")
 local api = subApp:new()
@@ -51,8 +54,13 @@ local function getProblem(date)
     local date = date or os.date("%F")
 
     -- do some quick validation on the date
-    if date:len() ~= 10 or not string.match(date, "%d%d%d%d%-%d%d%-%d%d") then
+    if dateFunctions.verifyFormat(date) == false then
         return {status = 404, layout = false, json = jsonError("The date string is not properly formatted", "The date string should follow 'YYYY-MM-DD.'")}
+    end
+
+    -- ensure that it's within the "today" bounds anywhere around the globe.
+    if dateFunctions.validDate(date) == false then
+        return {status = 404, layout = false, json = jsonError("That date has not occurred yet", "Valid dates go between 2015-11-02 and today")}
     end
 
     -- query the database!

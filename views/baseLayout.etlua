@@ -5,7 +5,7 @@
 <head>
 	<title><%= title or "PLEASE SET self.title in route" %></title>
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
-	<link rel="stylesheet" type="text/css" href="static/style.css">
+	<link rel="stylesheet" type="text/css" href="/static/style.css">
 	<% if mainPage then %>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
 	<script src="/static/lib/mithril.min.js"></script>

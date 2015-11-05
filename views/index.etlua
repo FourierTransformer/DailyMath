@@ -22,13 +22,21 @@
 
 		dailyMath.loadError = null;
 		dailyMath.load = function() {
-			return m.request({method: "GET", url: "/api/v1/problems/2015-10-15",
+			var today = <%- "\"" .. definedDate .. "\"" %>;
+			if (!today) {
+				var todayDate = new Date();
+				var day = todayDate.getDate();
+				var month = todayDate.getMonth()+1;
+				var year = todayDate.getFullYear();
+				today = year + '-' + month + '-' + day;
+			}
+			return m.request({method: "GET", url: "/api/v1/problems/" + today,
 			// return m.request({method: "GET", url: "/api/v1/problems/today",
 				// the response here is correct, but I'm not entirely certain what happens on the return
 				unwrapError: function(response) {
-					console.log(response.error);
-					dailyMath.loadError = response.error;
-			        return response.error;
+					console.log(response.errors);
+					dailyMath.loadError = response.errors;
+			        return response.errors;
 			    }
 		})}
 
