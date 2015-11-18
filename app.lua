@@ -49,4 +49,9 @@ app:match("about", "/about", cached(function(self)
     return { render = true }
 end))
 
+app:match("thanks", "/thank-you", cached(function(self)
+	self.title = "DailyMath - Thanks!"
+	return { render = true }
+end))
+
 return app

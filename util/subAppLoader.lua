@@ -6,7 +6,7 @@
 
 ]]
 
--- Internal class constructor
+-- Internal class constructor from Yonaba
 local class = function(...)
   local klass = {}
   klass.__index = klass
