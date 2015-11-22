@@ -11,8 +11,13 @@ local date = require("date")
 
 -- ensure that the date is in YYYY-MM-DD format
 function dateFunctions.verifyFormat(dateString)
+    local dateObject
     if dateString:len() == 10 or string.match(dateString, "%d%d%d%d%-%d%d%-%d%d") then
-        return true
+        dateObject = date(dateString)
+        if dateObject == nil then
+            return false
+        end
+        return true, dateObject
     end
     return false
 end
@@ -40,10 +45,8 @@ end
 
 function dateFunctions.validDate(dateString)
     -- just making sure it's coming in the expected format
-    local selectedDate
-    if dateFunctions.verifyFormat(dateString) then
-        selectedDate = date(dateString)
-    else
+    local verifyFormat, selectedDate = dateFunctions.verifyFormat(dateString)
+    if verifyFormat == false then
         return false
     end
     
