@@ -22,7 +22,7 @@
 	<% content_for("inner") %>
 	
 	<div class="footer">
-		<p>&copy; 2015 DailyMath</p>
+		<p style="position: absolute;">&copy; 2015 DailyMath<% if mainPage then %><br>Published on M/W/F<% end %></p>
 		<ul>
 			<li><a href="/about">About</a></li>
 			<li><a href="/feedback">Feedback</a></li>

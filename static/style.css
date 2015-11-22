@@ -17,6 +17,7 @@ body {
 
 .controls h2 {
 	float: left;
+	margin-bottom: .3em;
 }
 
 /* NOTE: reusing styles. could get dicey moving forward */
