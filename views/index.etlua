@@ -63,8 +63,11 @@
 					alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
 				}
 			}
+			this.numLevels = function() {
+				return this.problem().problems.length
+			}
 			this.showLevels = function() {
-				if (this.problem().problems.length == 1) {
+				if (this.numLevels() == 1) {
 					return "none";
 				} else {
 					return "block";
@@ -94,16 +97,22 @@
 				// THE CONTROLS AND STUFF
 
 				m(".controls",
-				m("h2", ctrl.problem().problems[ctrl.user.level].category),
+				// m("h2", ctrl.problem().problems[ctrl.user.level].category + " - " + ctrl.problem().problems[ctrl.user.level].name),
+				m("h2", ctrl.problem().problems[ctrl.user.level].name),
 				m("ul", {style: {display: ctrl.showLevels()}},
 				dailyMath.levels.map(function(selectedLevel) {
 		            return m("li",
 		            		m(selectedLevel.level == ctrl.user.level ? "span.current" : "button", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
 		            		);
-		        }))
+		        })),
+				m(".postControls", 
+					m("p#date", ctrl.problem().problems[ctrl.user.level].date),
+					m("p#category", ctrl.problem().problems[ctrl.user.level].category)
+				)
 		        ),
-				//
-				m("p#date", ctrl.problem().problems[ctrl.user.level].date),
+				
+				// needed this so this text easily lined up when turning on/off  the level selector
+				
 
 				// DISPLAYING THE PROBLEM
 		        m("#problem",

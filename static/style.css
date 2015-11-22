@@ -13,11 +13,17 @@ body {
 
 .controls {
 	overflow: auto;
+	position: relative;
 }
 
 .controls h2 {
 	float: left;
 	margin-bottom: .3em;
+}
+
+.controls ul {
+	position: absolute;
+	right: 0;
 }
 
 /* NOTE: reusing styles. could get dicey moving forward */
@@ -54,7 +60,7 @@ ul span.current {
 	padding: 1em;
     background-color: #eee;
     border-radius: 1em;
-    margin: 1em 0;
+    margin-bottom: 1em;
 }
 
 #app form {
@@ -77,9 +83,21 @@ h2 {
 	padding-bottom: 0;
 }
 
-#date {
+.postControls {
+	width: 100%;
+	display: inline-block;
+}
+
+#category, #date {
 	margin-top: -.75em;
-	margin-bottom: 1.5em;
+}
+
+#category {
+	float: left;
+}
+
+#date {
+	float: right;
 }
 
 /* MOBILE READY */
@@ -98,6 +116,11 @@ h2 {
 		content: "";
 	}
 	#date {
-		margin-top: -3em;
+		float: left;
+	}
+
+	/* I KNOW, THIS IS BAD MOBILE UX */
+	#category {
+		display: none;
 	}
 }
