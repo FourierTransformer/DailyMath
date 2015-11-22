@@ -39,7 +39,7 @@ local function expandDate(dateString)
     local expanded = months[tonumber(string.sub(dateString, 6,7))] .. " "
 
     -- day number (WITH CORRECT ENDINGS!)
-    expanded = expanded .. string.sub(dateString, 9, 10)
+    expanded = expanded .. tonumber(string.sub(dateString, 9, 10)) --minor hack to have dates with 1 digit
     local lastNumber = numberEnds[tostring(string.sub, 10, 10)] or "th"
     expanded = expanded .. lastNumber .. ", "
 
@@ -66,13 +66,27 @@ local function getProblem(date)
     -- query the database!
     -- NOTE: the "ORDER BY" is only in here because I wrote some bad js
     -- that assumes high school always comes first...
-    local query = db.query([[SELECT problem, categories.type, level, answer, hint, answer_desc, date FROM problems 
+    local query = db.query([[SELECT problem, categories.type category, level, answer, hint, answer_desc, date, name, solution_methods.type solution_method, solution_json
+                            FROM problems 
                             LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
-                            WHERE date = ? AND approved = true
+                            LEFT OUTER JOIN solution_methods ON (problems.solution_id = solution_methods.id)
+                            WHERE date = (SELECT date FROM problems where date <= ? ORDER BY date DESC LIMIT 1)
                             ORDER BY level]], date)
 
-    for _, v in ipairs(query) do
-        v.date = expandDate(v.date)
+    for _, problem in ipairs(query) do
+
+        --expand it!
+        problem.date = expandDate(problem.date)
+
+        -- the solution section includes things that for problem verification only. 
+        problem.solution = {
+            ["answer"] = tonumber(problem.answer),
+            ["method"] = problem.solution_method,
+            ["json"] = problem.solution_json
+        }
+        problem.answer = nil
+        problem.solution_method = nil
+
     end
 
     -- return as necessary

@@ -57,10 +57,17 @@
 			this.submitAnswer = function() {
 				console.log(this.user.answer());
 				console.log(this.problem().problems[this.user.level].answer);
-				if (this.user.answer() == this.problem().problems[this.user.level].answer) {
+				if (this.user.answer() == this.problem().problems[this.user.level].solution.answer) {
 					alert("That is correct!");
 				} else {
 					alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
+				}
+			}
+			this.showLevels = function() {
+				if (this.problem().problems.length == 1) {
+					return "none";
+				} else {
+					return "block";
 				}
 			}
 			this.changeLevel = function(newLevel) {
@@ -87,8 +94,8 @@
 				// THE CONTROLS AND STUFF
 
 				m(".controls",
-				m("h2", ctrl.problem().problems[ctrl.user.level].type),
-				m("ul",
+				m("h2", ctrl.problem().problems[ctrl.user.level].category),
+				m("ul", {style: {display: ctrl.showLevels()}},
 				dailyMath.levels.map(function(selectedLevel) {
 		            return m("li",
 		            		m(selectedLevel.level == ctrl.user.level ? "span.current" : "button", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
@@ -110,7 +117,7 @@
 				),
 				//HINT
 				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
-				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
+				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : ""),
 			]; }
 		}
 
