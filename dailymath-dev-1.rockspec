@@ -14,7 +14,8 @@ description = {
 
 dependencies = {
     "lua ~> 5.1",
-    "lapis ~> 1.3.0" 
+    "lapis ~> 1.3.0",
+    "date ~> 2.1.1" 
 }
 
 build = {
