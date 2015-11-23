@@ -77,6 +77,7 @@ WORKDIR /app
 ADD *.lua /app/
 ADD views /app/views
 ADD static /app/static
+ADD util /app/util
 ADD mime.types /app/
 ADD nginx.conf /app/
 RUN ls
