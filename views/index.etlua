@@ -6,6 +6,7 @@
 			this.answer = m.prop('');
 			this.level = 0;
 			this.showHint = false;
+			this.showAnswerBox = false;
 		};
 
 		dailyMath.renderKatex = function(problem) {
@@ -31,8 +32,6 @@
 				today = year + '-' + month + '-' + day;
 			}
 			return m.request({method: "GET", url: "/api/v1/problems/" + today,
-			// return m.request({method: "GET", url: "/api/v1/problems/today",
-				// the response here is correct, but I'm not entirely certain what happens on the return
 				unwrapError: function(response) {
 					console.log(response.errors);
 					dailyMath.loadError = response.errors;
@@ -43,10 +42,27 @@
 		dailyMath.controller = function() {
 			this.user = new dailyMath.user();
 			this.problem = dailyMath.load();
-			this.mathProblem = null;
+
+			this.showDescription = false;
+			this.showAnswer = false;
+
+			//hmmmm oft-repeated code. Needs a cleanup...
 			this.toggleHint = function() {
 				this.user.showHint == true ? this.user.showHint = false : this.user.showHint = true;
 			};
+
+			this.toggleAnswerBox = function() {
+				this.user.showAnswerBox == true ? this.user.showAnswerBox = false : this.user.showAnswerBox = true;
+			};
+
+			this.toggleAnswer = function() {
+				this.showAnswer == true ? this.showAnswer = false : this.showAnswer = true;
+			};
+
+			this.toggleAnswerDescription = function() {
+				this.showDescription == true ? this.showDescription = false : this.showDescription = true;
+			};
+
 			this.hintButtonDisplay = function() {
 				if (this.problem().problems[this.user.level].hint) {
 					return "block";
@@ -54,20 +70,53 @@
 					return "none";
 				}
 			}
-			this.submitAnswer = function() {
-				console.log(this.user.answer());
-				console.log(this.problem().problems[this.user.level].answer);
-				if (this.user.answer() == this.problem().problems[this.user.level].solution.answer) {
-					alert("That is correct!");
+
+			this.answerDisplay = function() {
+				if (this.user.showAnswerBox) {
+					return "block";
 				} else {
-					alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
+					return "none";
 				}
 			}
-			this.numLevels = function() {
-				return this.problem().problems.length
+
+			this.doNothing = function() { return false; }
+
+			this.submitAnswer = function() {
+				// console.log(this.user.answer());
+				// console.log(this.problem().problems[this.user.level].answer);
+				this.user.showAnswerBox = true;
+				if (this.user.answer() == this.problem().problems[this.user.level].solution.answer) {
+					// alert("That is correct!");
+				} else {
+					// alert("Sorry, " + this.user.answer() + " is not correct. Try Again!")
+				}
 			}
+
+			// eh - This should do for now...!
+			this.isAnswerCorrect = function() {
+				absVal = Math.abs(this.user.answer() - this.problem().problems[this.user.level].solution.answer);
+				if ( absVal / this.problem().problems[this.user.level].solution.answer <= .05) {
+					return m(".flex", 
+						m("h1", "Correct!"),
+						m("p", this.user.answer() + " is a valid response! New problems every Monday, Wednesday, and Friday!")
+					)
+				} else {
+					// here is where it really starts feeling slimy
+					return m("#incorrect",
+						m(".flex",
+							m("p", "Sorry, that's not correct!"),
+							m(".right", m("button", {onclick: this.toggleAnswerBox.bind(this)}, "Try Again"))
+						),
+						m("button.error .right", {onclick: this.toggleAnswerDescription.bind(this)}, "Show Description"),
+						m("button.warning", {onclick: this.toggleAnswer.bind(this)}, "Show Answer"),
+						m("p", this.showDescription ? "Description: " + this.problem().problems[this.user.level].answer_desc : ""),
+						m("p", this.showAnswer ? "Answer: " + this.problem().problems[this.user.level].solution.answer : "")
+					);
+				}
+			}
+			
 			this.showLevels = function() {
-				if (this.numLevels() == 1) {
+				if (this.problem().problems.length == 1) {
 					return "none";
 				} else {
 					return "block";
@@ -105,28 +154,35 @@
 		            		m(selectedLevel.level == ctrl.user.level ? "span.current" : "button", {onclick: ctrl.changeLevel.bind(ctrl, selectedLevel.level)}, selectedLevel.title)
 		            		);
 		        })),
+				
+				// needed this so this text easily lined up when turning on/off  the level selector
 				m(".postControls", 
 					m("p#date", ctrl.problem().problems[ctrl.user.level].date),
 					m("p#category", ctrl.problem().problems[ctrl.user.level].category)
 				)
 		        ),
-				
-				// needed this so this text easily lined up when turning on/off  the level selector
-				
 
 				// DISPLAYING THE PROBLEM
+				// also, the isAnswerCorrect feels wrong. I'll look into how to do this proper a little later...
 		        m("#problem",
-				m("p", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))),
+		        	ctrl.user.showAnswerBox ? ctrl.isAnswerCorrect() :
+					m("p", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))
+				),
+
+				//HINT
+				m(".row#hint",
+					m(".fourth", m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint")),
+					m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
+				),
+
 				// THE ANSWER FORM
-				m("form",
+				m("form", {onsubmit: ctrl.doNothing.bind(ctrl)},
 					m("label", {for: "answer"}, "Answer:"),
 					m("input[type=text]", {id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", ctrl.user.answer)}),
 					m("input", { type: "submit", value:"Submit", onclick: ctrl.submitAnswer.bind(ctrl)})
 					// m("label", {class: "button", for: "modal_1"}, "Submit"),
 				),
-				//HINT
-				m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint"),
-				m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : ""),
+
 			]; }
 		}
 

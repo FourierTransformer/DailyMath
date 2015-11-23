@@ -100,6 +100,31 @@ h2 {
 	float: right;
 }
 
+#hint p {
+    vertical-align: middle;  
+}
+
+/* HERE THER BE A LITTLE DIRTY CSS */
+.flex {
+	display: flex;
+	align-items: center;
+  	justify-content: center;
+}
+
+.flex >* {
+	flex-basis: 50%;
+}
+
+.flex h1 {
+	text-align: center;
+}
+
+#incorrect .right {
+	float: right;
+	text-align: right;
+}
+/* AND HERE IT ENDS*/
+
 /* MOBILE READY */
 @media screen and (max-width: 500px) {
 	body {
