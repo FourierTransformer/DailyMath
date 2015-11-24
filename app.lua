@@ -1,12 +1,18 @@
 local lapis = require("lapis")
 local app = lapis.Application()
+local config = require("lapis.config").get()
 
 -- enable etlua and set the base template
 app:enable("etlua")
 app.layout = require("views.baseLayout")
 
 -- get some caching up in here!
-local cached = require("lapis.cache").cached
+local cached
+if config._name == "development" then
+	function cached(func) return func end
+else
+	cached = require("lapis.cache").cached
+end
 
 -- our utility to load subapps
 local subApp = require("util.subAppLoader")
@@ -22,12 +28,12 @@ subApp.loadSubApps(app, subApps)
 local dateFunctions = require("util.dateFunctions")
 
 -- setup that homepage yo
-app:match("/", function(self)
+app:match("/", cached(function(self)
     self.title = "DailyMath - a new math problem every weekday!"
     self.definedDate = ""
     self.mainPage = true
     return { render = "index" }
-end)
+end))
 
 app:match("/p/:date", function(self)
 	local date = self.params.date
@@ -45,8 +51,8 @@ app:match("/p/:date", function(self)
 end)
 
 app:match("about", "/about", cached(function(self)
-    self.title = "DailyMath - About"
-    return { render = true }
+	self.title = "DailyMath - About"
+	return { render = true }
 end))
 
 app:match("thanks", "/thank-you", cached(function(self)
