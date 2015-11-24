@@ -30,25 +30,6 @@ local function jsonError(titleText, detailText)
     }
 end
 
-local months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
-local numberEnds = {"st", "nd", "rd"}
-
--- date will always come in as YYYY-MM-DD
-local function expandDate(dateString)
-    -- month string
-    local expanded = months[tonumber(string.sub(dateString, 6,7))] .. " "
-
-    -- day number (WITH CORRECT ENDINGS!)
-    expanded = expanded .. tonumber(string.sub(dateString, 9, 10)) --minor hack to have dates with 1 digit
-    local lastNumber = numberEnds[tostring(string.sub, 10, 10)] or "th"
-    expanded = expanded .. lastNumber .. ", "
-
-    -- year
-    expanded = expanded .. string.sub(dateString, 1, 4)
-
-    return expanded
-end
-
 local function getProblem(date)
     -- either use the submitted date or today's date
     local date = date or os.date("%F")
@@ -76,7 +57,7 @@ local function getProblem(date)
     for _, problem in ipairs(query) do
 
         --expand it!
-        problem.date = expandDate(problem.date)
+        problem.date = dateFunctions.expandDate(problem.date)
 
         -- the solution section includes things that for problem verification only. 
         problem.solution = {

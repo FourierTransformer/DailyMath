@@ -9,6 +9,25 @@
 local dateFunctions = {}
 local date = require("date")
 
+local months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+local numberEnds = {"st", "nd", "rd"}
+
+-- date will always come in as YYYY-MM-DD
+function dateFunctions.expandDate(dateString)
+    -- month string
+    local expanded = months[tonumber(string.sub(dateString, 6,7))] .. " "
+
+    -- day number (WITH CORRECT ENDINGS!)
+    expanded = expanded .. tonumber(string.sub(dateString, 9, 10)) --minor hack to have dates with 1 digit
+    local lastNumber = numberEnds[tonumber(string.sub(dateString, 10, 10))] or "th"
+    expanded = expanded .. lastNumber .. ", "
+
+    -- year
+    expanded = expanded .. string.sub(dateString, 1, 4)
+
+    return expanded
+end
+
 -- ensure that the date is in YYYY-MM-DD format
 function dateFunctions.verifyFormat(dateString)
     local dateObject
