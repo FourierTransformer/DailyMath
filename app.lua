@@ -29,7 +29,7 @@ local dateFunctions = require("util.dateFunctions")
 
 -- setup that homepage yo
 app:match("/", cached(function(self)
-    self.title = "DailyMath - a new math problem every weekday!"
+    self.title = "DailyMath - a new math problem 3x a week!"
     self.definedDate = ""
     self.mainPage = true
     return { render = "index" }
