@@ -10,10 +10,20 @@
 		};
 
 		dailyMath.renderKatex = function(problem) {
-			var start_pos = problem.indexOf('$') + 1;
-			var end_pos = problem.indexOf('$',start_pos);
-			var text_to_get = problem.substring(start_pos,end_pos)
-			return problem.substring(0, start_pos-1) + katex.renderToString(text_to_get) + problem.substring(end_pos+1)
+			output = ""
+			dpos = problem.indexOf('$')
+			// my hacky parser
+			while (dpos !== -1) {
+				var start_pos = dpos + 1;
+				var end_pos = problem.indexOf('$',start_pos);
+				var text_to_get = problem.substring(start_pos,end_pos)
+				text_to_get = text_to_get.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				output = output.concat(problem.substring(0, start_pos-1) + katex.renderToString(text_to_get))
+				problem = problem.substring(end_pos+1)
+				dpos = problem.indexOf('$')
+			}
+			output = output.concat(problem.substring(dpos))
+			return output
 		};
 
 		dailyMath.levels = [
@@ -109,7 +119,7 @@
 						),
 						m("button.error .right", {onclick: this.toggleAnswerDescription.bind(this)}, "Show Description"),
 						m("button.warning", {onclick: this.toggleAnswer.bind(this)}, "Show Answer"),
-						m("p", this.showDescription ? "Description: " + this.problem().problems[this.user.level].answer_desc : ""),
+						m("pre", this.showDescription ? m.trust(dailyMath.renderKatex(this.problem().problems[this.user.level].answer_desc)) : ""),
 						m("p", this.showAnswer ? "Answer: " + this.problem().problems[this.user.level].solution.answer : "")
 					);
 				}
@@ -165,7 +175,8 @@
 				// DISPLAYING THE PROBLEM
 				// also, the isAnswerCorrect feels wrong. I'll look into how to do this proper a little later...
 		        m("#problem",
-		        	ctrl.user.showAnswerBox ? ctrl.isAnswerCorrect() :
+		        	ctrl.user.showAnswerBox ? ctrl.isAnswerCorrect()
+		        	 :
 					m("pre", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))
 				),
 
