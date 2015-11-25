@@ -69,18 +69,18 @@ RUN ldconfig
 
 # install some rocks
 RUN mkdir /app
-ADD *.rockspec /app/
+COPY *.rockspec /app/
 RUN luarocks build --only-deps /app/*.rockspec
 
 # FINAL SETUP
 WORKDIR /app
-ADD *.lua /app/
-ADD views /app/views
-ADD static /app/static
-ADD util /app/util
-ADD apps /app/apps
-ADD mime.types /app/
-ADD nginx.conf /app/
+COPY *.lua /app/
+COPY views /app/views
+COPY static /app/static
+COPY util /app/util
+COPY apps /app/apps
+COPY mime.types /app/
+COPY nginx.conf /app/
 RUN ls
 EXPOSE 80
 

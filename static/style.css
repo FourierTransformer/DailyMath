@@ -126,10 +126,22 @@ h2 {
 	text-align: center;
 }
 
-#incorrect .right {
-	float: right;
-	text-align: right;
+#incorrect {
+	text-align: center;
 }
+
+#incorrect .row {	
+	margin-top: 1.5em;
+}
+
+.row button {
+	float: right;
+}
+
+.row button.warning, .row button.error {
+	margin-right: 1em;
+}
+
 /* AND HERE IT ENDS*/
 
 /* MOBILE READY */

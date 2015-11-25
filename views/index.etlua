@@ -113,14 +113,12 @@
 				} else {
 					// here is where it really starts feeling slimy
 					return m("#incorrect",
-						m(".flex",
-							m("p", "Sorry, that's not correct!"),
-							m(".right", m("button", {onclick: this.toggleAnswerBox.bind(this)}, "Try Again"))
+						m("h3", this.showAnswer ? "Answer: " + this.problem().problems[this.user.level].solution.answer : "Sorry, that's not correct!"),
+						m(".row",
+							m("button#try", {onclick: this.toggleAnswerBox.bind(this)}, "Try Again"),
+							m(this.showAnswer ? "button.error" : "button.warning", {onclick: this.showAnswer ? this.toggleAnswerDescription.bind(this) : this.toggleAnswer.bind(this)}, this.showAnswer ? "Show Description" : "Show Answer")
 						),
-						m("button.error .right", {onclick: this.toggleAnswerDescription.bind(this)}, "Show Description"),
-						m("button.warning", {onclick: this.toggleAnswer.bind(this)}, "Show Answer"),
-						m("pre", this.showDescription ? m.trust(dailyMath.renderKatex(this.problem().problems[this.user.level].answer_desc)) : ""),
-						m("p", this.showAnswer ? "Answer: " + this.problem().problems[this.user.level].solution.answer : "")
+						m("pre", {style: { display: this.showDescription ? "block" : "none"}}, m.trust(dailyMath.renderKatex(this.problem().problems[this.user.level].answer_desc)))
 					);
 				}
 			}
