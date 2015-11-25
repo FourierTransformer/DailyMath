@@ -13,8 +13,13 @@
 -- and lapis.db to access the database
 local db = require("lapis.db")
 
+-- get our caching func!
+local cached = require("lapis.cache").cached
+
 -- gotta handle some of our shared date functions!
 local dateFunctions = require("util.dateFunctions")
+
+local json = require("cjson")
 
 -- our submodule loader and subApp
 local subApp = require("util.subAppLoader")
@@ -78,10 +83,20 @@ local function getProblem(date)
     end
 end
 
+-- minor issue is when someone selects a problem that's available in Kiritimati but
+-- I haven't put it in the database yet... temp fix using 6 hour cache time
+-- this should be a little more thought out than this. But for now this is great!
+local function cacheDate(request)
+    return dateFunctions.validDate(request['url_params'].date)
+end
+
 -- get the answer for any specific date
-api:get("/api/v1/problems/:date", function(self)
-    -- TODO: ensure that the date is within 24 hours of the problem.
-    return getProblem(self.params.date)
-end)
+api:get("/api/v1/problems/:date", cached({
+    when = cacheDate,
+    exptime = 21600, -- 6 hours until i can get that cachedate up to par
+    function(self)
+        return getProblem(self.params.date)
+    end
+}))
 
 return api
