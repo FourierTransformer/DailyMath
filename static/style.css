@@ -130,16 +130,17 @@ h2 {
 	text-align: center;
 }
 
-#incorrect .row {	
+#incorrect .buttons {
 	margin-top: 1.5em;
+	overflow: hidden;
 }
 
-.row button {
+.buttons button {
 	float: right;
 }
 
-.row button.warning, .row button.error {
-	margin-right: 1em;
+.buttons button#try {
+	margin-left: 1em;
 }
 
 /* AND HERE IT ENDS*/

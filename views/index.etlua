@@ -114,7 +114,7 @@
 					// here is where it really starts feeling slimy
 					return m("#incorrect",
 						m("h3", this.showAnswer ? "Answer: " + this.problem().problems[this.user.level].solution.answer : "Sorry, that's not correct!"),
-						m(".row",
+						m(".buttons",
 							m("button#try", {onclick: this.toggleAnswerBox.bind(this)}, "Try Again"),
 							m(this.showAnswer ? "button.error" : "button.warning", {onclick: this.showAnswer ? this.toggleAnswerDescription.bind(this) : this.toggleAnswer.bind(this)}, this.showAnswer ? "Show Description" : "Show Answer")
 						),
