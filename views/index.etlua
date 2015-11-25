@@ -166,7 +166,7 @@
 				// also, the isAnswerCorrect feels wrong. I'll look into how to do this proper a little later...
 		        m("#problem",
 		        	ctrl.user.showAnswerBox ? ctrl.isAnswerCorrect() :
-					m("p", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))
+					m("pre", m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].problem)))
 				),
 
 				//HINT

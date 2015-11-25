@@ -63,6 +63,13 @@ ul span.current {
     margin-bottom: 1em;
 }
 
+/* picnic css - you failed me and went too far... sniff */
+#problem pre {
+	white-space: pre-wrap;
+	background: 0;
+	font: inherit;
+}
+
 #app form {
 	vertical-align: top;
 }
