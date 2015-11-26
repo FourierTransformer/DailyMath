@@ -1,6 +1,24 @@
 <div id = "app"></div>
 <!-- the api returns the answer with the question to make my life a lot easier. Sure, you can find the answer here, but then what's the point in doing daily math? -->
 <script>
+	function getScript(source, callback) {
+	    var script = document.createElement('script');
+	    var prior = document.getElementsByTagName('script')[0];
+	    script.async = 1;
+	    prior.parentNode.insertBefore(script, prior);
+
+	    script.onload = script.onreadystatechange = function( _, isAbort ) {
+	        if(isAbort || !script.readyState || /loaded|complete/.test(script.readyState) ) {
+	            script.onload = script.onreadystatechange = null;
+	            script = undefined;
+
+	            if(!isAbort) { if(callback) callback(); }
+	        }
+	    };
+
+	    script.src = source;
+	}
+
 	var dailyMath = {};
 		dailyMath.user = function() {
 			this.answer = m.prop('');
@@ -31,6 +49,21 @@
 			{title: "College", level: 1}
 		];
 
+		// load additional js scripts after the jquery call
+		dailyMath.additionalScripts = {};
+		dailyMath.additionalScripts["Duration Compare"] = "/static/lib/juration.js"
+
+		// do my sweet compare based on solution method
+		dailyMath.compare = {};
+		dailyMath.compare["Duration Compare"] = function(correctValue, usersValue) {
+			if (juration.parse(correctValue) == juration.parse(usersValue)) {
+				return true;
+			} else {
+				return false;
+			}
+		};
+
+
 		dailyMath.loadError = null;
 		dailyMath.load = function() {
 			var today = <%- "\"" .. definedDate .. "\"" %>;
@@ -41,13 +74,22 @@
 				var year = todayDate.getFullYear();
 				today = year + '-' + month + '-' + day;
 			}
-			return m.request({method: "GET", url: "/api/v1/problems/" + today,
+			var request = m.prop([]);
+			m.request({method: "GET", url: "/api/v1/problems/" + today,
 				unwrapError: function(response) {
 					console.log(response.errors);
 					dailyMath.loadError = response.errors;
 			        return response.errors;
 			    }
-		})}
+			}).then(request).then(function(req) {
+				req.problems.map(function(probs) {
+					if (dailyMath.additionalScripts[probs.solution.method]) {
+						getScript(dailyMath.additionalScripts[probs.solution.method])
+					}
+				})
+			})
+			return request
+		}
 
 		dailyMath.controller = function() {
 			this.user = new dailyMath.user();
@@ -104,8 +146,8 @@
 
 			// eh - This should do for now...!
 			this.isAnswerCorrect = function() {
-				absVal = Math.abs(this.user.answer() - this.problem().problems[this.user.level].solution.answer);
-				if ( absVal / this.problem().problems[this.user.level].solution.answer <= .05) {
+				var prob = this.problem().problems[this.user.level]
+				if (dailyMath.compare[prob.solution.method](this.user.answer(), prob.solution.answer)) {
 					return m(".flex", 
 						m("h1", "Correct!"),
 						m("p", this.user.answer() + " is a valid response! New problems every Monday, Wednesday, and Friday!")

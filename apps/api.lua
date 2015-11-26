@@ -66,7 +66,7 @@ local function getProblem(date)
 
         -- the solution section includes things that for problem verification only. 
         problem.solution = {
-            ["answer"] = tonumber(problem.answer),
+            ["answer"] = problem.answer,
             ["method"] = problem.solution_method,
             ["json"] = problem.solution_json
         }
