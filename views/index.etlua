@@ -62,6 +62,13 @@
 				return false;
 			}
 		};
+		dailyMath.compare["Numerical Compare"] = function(correctValue, usersValue) {
+			if (correctValue == usersValue) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 
 
 		dailyMath.loadError = null;
@@ -223,7 +230,7 @@
 				//HINT
 				m(".row#hint",
 					m(".fourth", m("button", {onclick: ctrl.toggleHint.bind(ctrl), style: {display: ctrl.hintButtonDisplay()}}, ctrl.user.showHint ? "Hide Hint" : "Show Hint")),
-					m("p", ctrl.user.showHint ? ctrl.problem().problems[ctrl.user.level].hint : "")
+					m("p", ctrl.user.showHint ? m.trust(dailyMath.renderKatex(ctrl.problem().problems[ctrl.user.level].hint)) : "")
 				),
 
 				// THE ANSWER FORM
