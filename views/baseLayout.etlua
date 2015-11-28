@@ -9,6 +9,7 @@
 	<% if mainPage then %>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
 	<script src="/static/lib/mithril.min.js"></script>
+	<script src="/static/app.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
 	<% end %>
 	<% if recaptchaRequired then %>

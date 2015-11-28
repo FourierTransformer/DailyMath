@@ -2,3 +2,4 @@ logs/
 *_temp/
 nginx.conf.compiled
 Postgres.sql
+*.js.map
