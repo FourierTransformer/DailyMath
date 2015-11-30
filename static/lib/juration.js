@@ -5,6 +5,8 @@
  * Copyright 2011, Dom Christie
  * Licenced under the MIT licence
  *
+ * stringify was removed.
+ *
  */
 
 (function() {
@@ -81,54 +83,6 @@
       }
     }
   };
-    
-  var stringify = function(seconds, options) {
-    
-    if(!_isNumeric(seconds)) {
-      throw "juration.stringify(): Unable to stringify a non-numeric value";
-    }
-    
-    if((typeof options === 'object' && options.format !== undefined) && (options.format !== 'micro' && options.format !== 'short' && options.format !== 'long' && options.format !== 'chrono')) {
-      throw "juration.stringify(): format cannot be '" + options.format + "', and must be either 'micro', 'short', or 'long'";
-    }
-    
-    var defaults = {
-      format: 'short',
-      units: undefined
-    };
-    
-    var opts = _extend(defaults, options);
-    
-    var units = ['years', 'months', 'days', 'hours', 'minutes', 'seconds'], values = [];
-    var remaining = seconds;
-    var activeUnits = 0;
-    for(var i = 0, len = units.length;
-        i < len && (opts.units == undefined || activeUnits < opts.units);
-        i++) {
-      var unit = UNITS[units[i]];
-      values[i] = Math.floor(remaining / unit.value);
-      if (values[i] > 0 || activeUnits > 0)
-        activeUnits++;
-
-      if(opts.format === 'micro' || opts.format === 'chrono') {
-        values[i] += unit.formats[opts.format];
-      }
-      else {
-        values[i] += ' ' + _pluralize(values[i], unit.formats[opts.format]);
-      }
-      remaining = remaining % unit.value;
-    }
-    var output = '';
-    for(i = 0, len = values.length; i < len; i++) {
-      if(values[i].charAt(0) !== "0" && opts.format != 'chrono') {
-        output += values[i] + ' ';
-      }
-      else if (opts.format == 'chrono') {
-        output += _padLeft(values[i]+'', '0', i==values.length-1 ? 2 : 3);
-      }
-    }
-    return output.replace(/\s+$/, '').replace(/^(00:)+/g, '').replace(/^0/, '');
-  };
   
   var parse = function(string) {
     
@@ -161,41 +115,8 @@
     return sum;
   };
   
-  // _padLeft('5', '0', 2); // 05
-  var _padLeft = function(s, c, n) {
-      if (! s || ! c || s.length >= n) {
-        return s;
-      }
-      
-      var max = (n - s.length)/c.length;
-      for (var i = 0; i < max; i++) {
-        s = c + s;
-      }
-      
-      return s;
-  };
-  
-  var _pluralize = function(count, singular) {
-    return count == 1 ? singular : singular + "s";
-  };
-  
-  var _isNumeric = function(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-  };
-  
-  var _extend = function(obj, extObj) {
-    for (var i in extObj) {
-      if(extObj[i] !== undefined) {
-        obj[i] = extObj[i];
-      }
-    }
-    return obj;
-  };
-  
   var juration = {
     parse: parse,
-    stringify: stringify,
-    humanize: stringify
   };
 
   if ( typeof module === "object" && module && typeof module.exports === "object" ) {

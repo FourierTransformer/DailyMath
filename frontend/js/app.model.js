@@ -5,6 +5,7 @@ var app = {};
 // load additional js scripts after the jquery call
 app.additionalScripts = {};
 app.additionalScripts["Duration Compare"] = "/static/lib/juration.js";
+app.additionalScripts["Byte Compare"] = "/static/lib/nattybytes.js";
 
 // download additional scripts if need be
 // found somewhere on stack overflow as a non-jquery async script loader
@@ -83,12 +84,23 @@ app.vm.init = function() {
 	// do my sweet comparisons based on solution methods
 	app.vm.compare = {};
 	app.vm.compare["Duration Compare"] = function(correctValue, usersValue) {
-		// TODO: make this handle juration errors gracefully
-		return app.vm.propy(juration.parse(correctValue) == juration.parse(usersValue));
+		var successful = m.prop(false);
+		try {
+			successful = app.vm.propy(juration.parse(correctValue) == juration.parse(usersValue));
+		} catch(e) {}
+		return successful;
+	};
+	app.vm.compare["Byte Compare"] = function(correctValue, usersValue) {
+		var successful = m.prop(false);
+		try {
+			successful = app.vm.propy(nattybytes.parse(correctValue) == nattybytes.parse(usersValue));
+		} catch(e) {}
+		return successful;
 	};
 	app.vm.compare["Numerical Compare"] = function(correctValue, usersValue) {
 		return app.vm.propy(correctValue == usersValue);
 	};
+
 
 	// getting SUPERDRY now.
 	// NOTE: this also works with truthy/falsey
