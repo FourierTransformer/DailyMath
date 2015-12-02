@@ -19,7 +19,7 @@ function basicValidation() {
 </script>
 <h2>Create Admin Account</h2>
 <p>It looks like there isn't an admin account setup in your database. Let's create one!</p>
-<form method="POST" action="/admin-create" id="feedbackForm">
+<form method="POST" action="/admin/create" id="feedbackForm">
     <label for="username">Username</label>
     <input type="text" name="username" required>
 

@@ -88,7 +88,7 @@ admin:post("admin-create", "/admin/create", function(self)
 	local firstquery = db.query("PREPARE insertAdmin (text, CITEXT, text) AS INSERT INTO USERS (DISPLAYNAME, PRIMARY_EMAIL, PASSWORD, ACCOUNT_ID) VALUES($1, $2, $3, 1)")
     print(json.encode(firstquery))
 	local query = db.query("EXECUTE insertAdmin(?, ?, ?)", self.params["username"], self.params["email"]:lower(), bcrypt.digest(self.params["password"], 10))
-	return json.encode(query)
+	return { redirect_to = self:url_for("admin-dashboard")}
 end)
 
 admin:post("admin-login", "/admin/login", function(self)
