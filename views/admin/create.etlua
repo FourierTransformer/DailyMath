@@ -1,0 +1,38 @@
+<script>
+function basicValidation() {
+    if (document.getElementById('password').value.length < 12) {
+        document.getElementById('password').style.borderColor = 'red';
+        document.getElementById('submitButton').disabled = true;
+        return false;
+    } else {
+        document.getElementById('password').style.borderColor = '';
+    }
+    if (document.getElementById('password').value !== document.getElementById('repeat-password').value) {
+        document.getElementById('repeat-password').style.borderColor = 'red';
+        document.getElementById('submitButton').disabled = true;
+        return false;
+    } else {
+        document.getElementById('repeat-password').style.borderColor = '';
+    }
+    document.getElementById('submitButton').disabled = false;
+};
+</script>
+<h2>Create Admin Account</h2>
+<p>It looks like there isn't an admin account setup in your database. Let's create one!</p>
+<form method="POST" action="/admin-create" id="feedbackForm">
+    <label for="username">Username</label>
+    <input type="text" name="username" required>
+
+    <label for="email">Email</label>
+    <input type="email" name="email" required>
+
+    <label for="password">Password (must be at least 12 characters)</label>
+    <input type="password" id="password" onkeyup="basicValidation()" name="password" required>
+
+    <label for="repeat-password">Repeat Password</label>
+    <input type="password" id="repeat-password" onkeyup="basicValidation()" name="repeat-password" required>
+
+    <input type="hidden" name="csrf_token" value="<%= csrf_token %>">
+
+    <input type="submit" id="submitButton" value="Submit" disabled>
+</form>

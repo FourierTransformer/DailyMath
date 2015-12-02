@@ -20,7 +20,8 @@ local subApp = require("util.subAppLoader")
 -- load all our subApps
 local subApps = {
     require("apps.feedback"),
-    require("apps.api")
+    require("apps.api"),
+    require("apps.admin")
 }
 subApp.loadSubApps(app, subApps)
 

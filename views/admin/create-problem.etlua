@@ -1,0 +1,40 @@
+<h2>New Problem for the Database</h2>
+<p>For category and solution method, either use the listed id or a new one will be generated!</p>
+<h3>Available Categories</h3>
+<%- categories %>
+<h3>Available Solution Methods</h3>
+<%- solution_method %>
+<h3>Form</h3>
+</div>
+
+<form method="POST" action="/admin/post-problem" id="problemForm">
+    <label for="date">Date (YYYY-MM-DD)</label>
+    <input type="text" name="date" required>
+
+    <label for="category">Category (either put in an ID from above or a new category will be created)</label>
+    <input type="category" name="category" required>
+
+	<label for="solution_id">Solution ID (either put in an ID from above or a new solution method will be created)</label>
+    <input type="solution_id" name="solution_id" required>
+
+	<label for="name">Name</label>
+    <input type="name" name="name" required>
+
+	<label for="level">Level (1 for High School, 2 for College - this really shouldn't be needed if there's only one problem on a given day)</label>
+    <input type="level" name="level" required>
+
+    <label for="problem">Problem</label>
+    <textarea rows="8" form="problemForm" name="problem" required></textarea>
+	
+	<label for="hint">Hint</label>
+    <input type="hint" name="hint">
+
+    <label for="answer">Answer</label>
+    <input type="answer" name="answer" required>
+
+	<label for="answer_description">Answer Description</label>
+    <textarea rows="8" form="problemForm" name="answer_description" required></textarea>
+
+    <input type="hidden" name="csrf_token" value="<%= csrf_token %>">
+    <input type="submit" value="Submit">
+</form>

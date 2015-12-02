@@ -1,0 +1,15 @@
+<h2>Please Login to your account</h2>
+<p>To make any changes in the admin console - please log in!</p>
+
+<form method="POST" action="/admin/login" id="feedbackForm">
+    <label for="username">Username or Email</label>
+    <input type="text" name="username" required>
+
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required>
+
+    <input type="hidden" name="csrf_token" value="<%= csrf_token %>">
+    <input type="hidden" name="redirect_to" value="<%= redirect_to %>">
+
+    <input type="submit" id="submitButton" value="Submit">
+</form>
