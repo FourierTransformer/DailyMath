@@ -28,6 +28,8 @@ var getScript = function(source, callback) {
     script.src = source;
 };
 
+var padVals = function(val) { return (val < 10 ? "0"+val : val)}
+
 // function to get the data for our problem
 app.getProblem = function() {
 	
@@ -38,7 +40,7 @@ app.getProblem = function() {
 		var day = todayDate.getDate();
 		var month = todayDate.getMonth()+1;
 		var year = todayDate.getFullYear();
-		today = year + "-" + month + "-" + day;
+		today = year + "-" + padVals(month) + "-" + padVals(day);
 	}
 	var request = m.prop([]);
 	m.request({method: "GET", url: "/api/v1/problems/" + today,
