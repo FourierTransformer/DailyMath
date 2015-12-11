@@ -6,81 +6,55 @@
  * Licenced under the MIT licence
  *
  * stringify was removed.
- *
+ * pico->millisecond support has been added
  */
 
 (function() {
 
   var UNITS = {
+    picoseconds: {
+      patterns: ['picosecond', 'picosec', 'ps'],
+      value: 0.000000000001
+    },   
+    nanoseconds: {
+      patterns: ['nanosecond', 'nanosec', 'ns'],
+      value: 0.000000001
+    },
+    microseconds: {
+      patterns: ['microsecond', 'microsec', 'us', 'µs'],
+      value: 0.000001
+    },
+    milliseconds: {
+      patterns: ['millisecond', 'millisec', 'ms'],
+      value: 0.001
+    },
     seconds: {
       patterns: ['second', 'sec', 's'],
-      value: 1,
-      formats: {
-        'chrono': '',
-        'micro':  's',
-        'short':  'sec',
-        'long':   'second'
-      }
+      value: 1
     },
     minutes: {
       patterns: ['minute', 'min', 'm(?!s)'],
-      value: 60,
-      formats: {
-        'chrono': ':',
-        'micro':  'm',
-        'short':  'min',
-        'long':   'minute'
-      }
+      value: 60
     },
     hours: {
       patterns: ['hour', 'hr', 'h'],
-      value: 3600,
-      formats: {
-        'chrono': ':',
-        'micro':  'h',
-        'short':  'hr',
-        'long':   'hour'
-      }
+      value: 3600
     },
     days: {
       patterns: ['day', 'dy', 'd'],
-      value: 86400,
-      formats: {
-        'chrono': ':',
-        'micro':  'd',
-        'short':  'day',
-        'long':   'day'
-      }
+      value: 86400
     },
     weeks: {
       patterns: ['week', 'wk', 'w'],
-      value: 604800,
-      formats: {
-        'chrono': ':',
-        'micro':  'w',
-        'short':  'wk',
-        'long':   'week'
-      }
+      value: 604800
     },
     months: {
       patterns: ['month', 'mon', 'mo', 'mth'],
-      value: 2628000,
-      formats: {
-        'chrono': ':',
-        'micro':  'm',
-        'short':  'mth',
-        'long':   'month'
-      }
+      value: 2628000
     },
     years: {
       patterns: ['year', 'yr', 'y'],
-      value: 31536000,
-      formats: {
-        'chrono': ':',
-        'micro':  'y',
-        'short':  'yr',
-        'long':   'year'
-      }
+      value: 31536000
     }
   };
   
@@ -98,7 +72,7 @@
     
     var sum = 0,
         numbers = string
-                    .replace(/(?!\.)\W+/g, ' ')                       // replaces non-word chars (excluding '.') with whitespace
+                    .replace(/(?!\.|e|-)\W+/g, ' ')                       // replaces non-word chars (excluding '.') with whitespace
                     .replace(/^\s+|\s+$|(?:and|plus|with)\s?/g, '')   // trim L/R whitespace, replace known join words with ''
                     .split(' ');
     
