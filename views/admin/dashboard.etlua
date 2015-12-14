@@ -1,4 +1,5 @@
 <h2>Admin Dashboard</h2>
 <ul>
 	<li><a href="/admin/create-problem">Create a problem</a></li>
+	<li><a href="/admin/select-problem">Edit/Delete a problem</a></li>
 </ul>

@@ -1,0 +1,3 @@
+<h2>Select Problem for the Database</h2>
+<p>Select a problem to edit from the list below:</p>
+<%- problem_table %>

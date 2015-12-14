@@ -1,0 +1,11 @@
+<h2>Edit/Delete: <%= values.name %></h2>
+<p>On this page you can edit or delete a problem</p>
+<h3>Delete the problem</h3>
+<form method="POST" action="/admin/delete-problem/<%= values.id %>">
+<input type="hidden" name="csrf_token" value="<%= csrf_token %>">
+<input type="submit" class="error" value="Delete Problem" onclick="return confirm('Are you sure you want to delete \'<%= values.name %>\'? This cannot be undone.')">
+</form>
+<p>Note: Deleting a problem removes it completely</p>
+<h3>Edit a problem</h3>
+<p>You can use the following form to edit the selected problem.</p>
+<% render("views.admin.admin-problem-form") %>

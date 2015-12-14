@@ -86,8 +86,12 @@ input, textarea, .g-recaptcha {
 	margin-bottom: 1em;
 }
 
-h2 {
+h2, h3 {
 	padding-bottom: 0;
+}
+
+p {
+	margin-top: .3em;
 }
 
 .postControls {

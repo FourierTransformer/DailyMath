@@ -10,15 +10,11 @@
 local csrf = require("lapis.csrf")
 local capture_errors = require("lapis.application").capture_errors
 
--- configs
+-- modules the admin pages need
 local config = require("lapis.config").get()
-
--- bcrypt for encryption
 local bcrypt = require("bcrypt")
-
 local json = require("cjson")
-
--- and lapis.db to access the database
+local cache = require("lapis.cache")
 local db = require("lapis.db")
 
 -- our submodule loader and subApp
@@ -56,6 +52,41 @@ local function verifyPassword(usernameOrEmail, password)
 	password = nil
 	usernameOrEmail = nil
 	return verified, dbPassword[1].displayname
+end
+
+-- hrefToID is a set, if you have a field in that set, it'll add an href to the given url
+-- with the ".id" appended (it also assumes that id exists in the tableInput)
+-- ex: self.problem_table = createHTMLTable(problems, {"id", "name", "date"}, {["name"] = "/admin/edit-problem/"})
+-- the name field will be hyperlinked to "/admin/edit-problem/id"
+local function createHTMLTable(tableInput, fields, hrefToID)
+	local htmlTable = "<table>"
+	local hrefToID = hrefToID or {}
+
+	-- create the header
+	htmlTable = htmlTable .. "<thead><tr>"
+	for i = 1, #fields do
+		htmlTable = htmlTable .. "<th>" .. fields[i] .. "</th>"
+	end
+	htmlTable = htmlTable .. "</tr></thead><tbody>"
+
+	-- go through and create the body
+	for i = 1, #tableInput do
+		htmlTable = htmlTable .. "<tr>"
+		for j = 1, #fields do
+			if hrefToID[fields[j]] then
+				htmlTable = htmlTable .. "<td>" .. "<a href='" .. hrefToID[fields[j]] .. tableInput[i].id .."'>" .. tableInput[i][fields[j]] .. "</a></td>"
+			else
+				htmlTable = htmlTable .. "<td>" .. tableInput[i][fields[j]] .. "</td>"
+			end
+		end
+		htmlTable = htmlTable .. "</tr>"
+	end
+
+	-- close it out
+	htmlTable = htmlTable .. "</tbody></table>"
+
+	-- and return!
+	return htmlTable
 end
 
 admin:get("admin-dashboard", "/admin/dashboard", function(self)
@@ -118,33 +149,19 @@ admin:get("admin-create-problem", "/admin/create-problem", function(self)
 
 	-- some niceties
 	self.title = "Create a New Problem"
+	self.postform = "/admin/post-problem/new"
 	self.csrf_token = csrf.generate_token(self)
 
+	-- values are empty. This is only set because the create and edit share a form
+	self.values = {}
+
 	-- let's get the solution methods and put them in a table!
-	local smethod = db.select("* from solution_methods")
-	local solution_method = "<table>"
-	solution_method = solution_method .. "<thead><tr><th>id</th><th>type</th></tr></thead><tbody>"
-	for i = 1, #smethod do
-		solution_method = solution_method .. "<tr>"
-		solution_method = solution_method .. "<td>" .. smethod[i].id .. "</td>"
-		solution_method = solution_method .. "<td>" .. smethod[i].type .. "</td>"
-		solution_method = solution_method .. "</tr>"
-	end
-	solution_method = solution_method .. "</tbody></table>"
-	self.solution_method = solution_method
+	local solution_methods = db.select("* from solution_methods")
+	self.solution_method = createHTMLTable(solution_methods, {"id", "type"})
 
 	-- do the same thing for categories
 	local dbcategories = db.select("* from categories")
-	local categories = "<table>"
-	categories = categories .. "<thead><tr><th>id</th><th>type</th></tr></thead><tbody>"
-	for i = 1, #dbcategories do
-		categories = categories .. "<tr>"
-		categories = categories .. "<td>" .. dbcategories[i].id .. "</td>"
-		categories = categories .. "<td>" .. dbcategories[i].type .. "</td>"
-		categories = categories .. "</tr>"
-	end
-	categories = categories .. "</tbody></table>"
-	self.categories = categories
+	self.categories = createHTMLTable(dbcategories, {"id", "type"})
 
   	return { render = "admin.create-problem" }
 end)
@@ -152,7 +169,7 @@ end)
 
 -- WAAAY too much trust with this one. Very little actual checking. Might be dangerous.
 -- https://youtu.be/E8b4xYbEugo
-admin:post("admin-post-problem", "/admin/post-problem", function(self)
+admin:post("admin-post-problem", "/admin/post-problem/:id", function(self)
 	-- better hope we're looking good here
 	csrf.assert_token(self)
 	if not self.session.admin then
@@ -196,7 +213,73 @@ admin:post("admin-post-problem", "/admin/post-problem", function(self)
 	-- consider turning this into a prepared statement.
 	-- however, SQLi here would be a little hard.
 	-- regardless I'll do it at some point!
-	db.insert("problems", insertTable)
+	-- we need to do an update instead of an insert if the id is given.
+	if self.params.id == "new" then
+		db.insert("problems", insertTable)
+	else
+		db.update("problems", insertTable, "id = ?", self.params.id)
+	end
+	cache.delete_path("/p/" .. insertTable.date)
+
+	return { render = "admin.success" }
+end)
+
+admin:get("admin-select-problem", "/admin/select-problem", function(self)
+	if not self.session.admin then
+		-- hmm maybe something a little different
+		self.redirect_to = "admin-select-problem"
+		return { render = "admin.login" }
+	end
+
+	-- gotta title the page!
+	self.title = "Select a problem to edit"
+
+	local problems = db.select("id, name, date, level from problems order by id desc")
+	self.problem_table = createHTMLTable(problems, {"id", "name", "date", "level"}, {["name"] = "/admin/edit-problem/"})
+
+	return { render = "admin.select-problem" }
+
+end)
+
+admin:get("admin-edit-problem", "/admin/edit-problem/:id", function(self)
+	if not self.session.admin then
+		-- hmm maybe something a little different to account for the date.
+		self.redirect_to = "admin-select-problem"
+		return { render = "admin.login" }
+	end
+
+	-- some niceties
+	self.title = "Edit an existing Problem"
+	self.postform = "/admin/post-problem/" .. self.params.id
+	self.csrf_token = csrf.generate_token(self)
+
+	-- grab the values from the database and send them in!
+	self.values = db.select("* from problems where id = ?", self.params.id)[1]
+
+	-- let's get the solution methods and put them in a table!
+	local solution_methods = db.select("* from solution_methods")
+	self.solution_method = createHTMLTable(solution_methods, {"id", "type"})
+
+	-- do the same thing for categories
+	local dbcategories = db.select("* from categories")
+	self.categories = createHTMLTable(dbcategories, {"id", "type"})
+
+  	return { render = "admin.edit-problem" }
+end)
+
+admin:post("admin-delete-problem", "/admin/delete-problem/:id", function(self)
+	csrf.assert_token(self)
+	if not self.session.admin then
+		-- hmm maybe something a little different to account for the date.
+		self.redirect_to = "admin-select-problem"
+		return { render = "admin.login" }
+	end
+
+	-- let's also clear the cache. We'll need the date tho!
+	-- BONUS: if id is invalid, this should bomb out.
+	local date = db.select("date from problems where id = ?", self.params.id)[1].date
+	cache.delete_path("/p/" .. date)
+	db.delete("problems", "id = ?", self.params.id)
 
 	return { render = "admin.success" }
 end)
