@@ -2,7 +2,7 @@
 
     dateFunctions.lua
 
-    Just a file to help with some of the date functions that may be needed
+    Just a file to help with some additional date functions that may be needed
 
 ]]
 
@@ -19,7 +19,14 @@ function dateFunctions.expandDate(dateString)
 
     -- day number (WITH CORRECT ENDINGS!)
     expanded = expanded .. tonumber(string.sub(dateString, 9, 10)) --minor hack to have dates with 1 digit
-    local lastNumber = numberEnds[tonumber(string.sub(dateString, 10, 10))] or "th"
+    local lastNumber
+
+    -- handling the specials 10's case: 10th, 11th, 12th, 13th...
+    if (string.sub(dateString, 9, 9) == "1") then
+        lastNumber = "th"
+    else
+        lastNumber = numberEnds[tonumber(string.sub(dateString, 10, 10))] or "th"
+    end
     expanded = expanded .. lastNumber .. ", "
 
     -- year
