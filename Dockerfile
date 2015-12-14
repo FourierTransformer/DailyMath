@@ -62,10 +62,7 @@ RUN wget -qO- http://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz |
     --with-lua=/opt/openresty/luajit/ \
     --lua-suffix=jit-2.1.0-alpha \
     --with-lua-include=/opt/openresty/luajit/include/luajit-2.1 \
- && make && make install
-
-# update some libs locations!
-RUN ldconfig
+ && make && make install && ldconfig
 
 # install some rocks
 RUN mkdir /app
@@ -81,7 +78,7 @@ COPY util /app/util
 COPY apps /app/apps
 COPY mime.types /app/
 COPY nginx.conf /app/
-RUN ls
+# RUN ls
 EXPOSE 80
 
 CMD lapis server production
