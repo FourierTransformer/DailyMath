@@ -1,15 +1,10 @@
 FROM debian:jessie
 
-MAINTAINER Shakil Thakur <shakil.thakur@gmail.com> # 2015-07-08
+MAINTAINER Shakil Thakur <shakil.thakur@gmail.com> # 2015-12-23
 
 ENV OPENRESTY_VERSION=1.7.4.1 \
  LUAROCKS_VERSION=2.2.2 \
  DEBIAN_FRONTEND=noninteractive
-
-# the world isn't ready for specific lua versions
-# OR I don't know how to do it in luarocks yet...
-#ENV LUA_DISCOUNT_VERSION
-#ENV LUA_GUMBO_VERSION
 
 # Install packages.
 RUN apt-get update && apt-get install -y \
@@ -79,6 +74,6 @@ COPY apps /app/apps
 COPY mime.types /app/
 COPY nginx.conf /app/
 # RUN ls
-EXPOSE 80
+# EXPOSE 80
 
-CMD lapis server production
+# CMD lapis server production
