@@ -31,6 +31,9 @@
 	<label for="answer_description">Answer Description</label>
     <textarea rows="8" form="problemForm" name="answer_description" required><%= values.answer_desc or "" %></textarea>
 
+    <label for="correct_message">Correct Message (Optional)</label>
+    <input type="correct_message" name="correct_message" value="<%= values.correct_message or "" %>">
+
     <input type="hidden" name="csrf_token" value="<%= csrf_token %>">
     <input type="submit" value="Submit">
 </form>

@@ -203,7 +203,8 @@ admin:post("admin-post-problem", "/admin/post-problem/:id", function(self)
 		level = self.params['level'],
 		problem = self.params['problem'],
 		answer = self.params['answer'],
-		answer_desc = self.params['answer_description']
+		answer_desc = self.params['answer_description'],
+		correct_message = self.params['correct_message']
 	}
 
 	if self.params['hint'] and self.params['hint'] ~= "" then

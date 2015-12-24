@@ -52,7 +52,7 @@ local function getProblem(date)
     -- query the database!
     -- NOTE: the "ORDER BY" is only in here because I wrote some bad js
     -- that assumes high school always comes first...
-    local query = db.query([[SELECT problem, categories.type category, level, answer, hint, answer_desc, date, name, solution_methods.type solution_method, solution_json
+    local query = db.query([[SELECT problem, categories.type category, level, answer, hint, answer_desc, date, name, solution_methods.type solution_method, solution_json, correct_message
                             FROM problems 
                             LEFT OUTER JOIN categories ON (problems.category_id = categories.id)
                             LEFT OUTER JOIN solution_methods ON (problems.solution_id = solution_methods.id)

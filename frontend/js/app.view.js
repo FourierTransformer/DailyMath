@@ -47,7 +47,7 @@ app.view = function(ctrl) {
     	? app.vm.isAnswerCorrect()() // o.0 -> this is hilarious!
     		? m(".flex", 
 				m("h1", "Correct!"),
-				m("p", user.answer() + " is a valid response! New problems every Monday, Wednesday, and Friday!")
+				m("p", user.answer() + " is correct! " + (app.vm.problem().problems[user.level].correct_message ? app.vm.problem().problems[user.level].correct_message : "New problems every Monday, Wednesday, and Friday!"))
 			)
     		: m("#incorrect",
 				m("h3", user.showAnswer() ? "Answer: " + app.vm.problem().problems[user.level].solution.answer : "Sorry, that's not correct!"),
