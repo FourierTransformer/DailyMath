@@ -1,0 +1,37 @@
+<script>
+var sha32 = "<%- jsonPayload %>";
+</script>
+<div id="app">
+	<div class="controls">
+		<h2><%- problem.name %></h2>
+		<div class="postControls">
+			<p id="date"><%- problem.date %></p>
+			<p id="category"><%- problem.category %></p>
+		</div>
+	</div>
+	<div id="problem">
+		<pre><%- problem.problem %></pre>
+	</div>
+	<% if problem.hint then %>
+		<table><tr>
+			<td><button>Show Hint</button></td>
+			<td><span></span></td>
+		</tr></table>
+	<% end %>
+	<form>
+		<label for="answer">Answer:</label>
+		<input type="text" id="answer" placeholder="Enter your answer here" autocomplete="off"><input type="submit" value="Submit">
+	</form>
+
+	<p class="nav" style="text-align: center;">
+		<% if date.previous then local previous = "visible" else local previous = "hidden"  %>
+		<a href="/p/2015-11-23" class="icon-step-backward button pseudo" style="visibility: <%- previous %>">First</a>
+		<a href="/p/<%- date.previous %>" class="icon-backward button pseudo" style="visibility: <%- previous %>">Prev</a>
+		<% end %>
+		<!-- <a href="#" class="button pseudo">Random</a> -->
+		<% if date.next then local next = "visible" else local next = "hidden"  %>
+		<a href="/p/<%- date.next %>" class="icon-forward button pseudo" style="visibility: <%- next %>">Next</a>
+		<a href="/" class="icon-step-forward button pseudo" style="visibility: <%- next %>">Last</a>
+		<% end %>
+	</p>
+</div>

@@ -28,34 +28,41 @@ var getScript = function(source, callback) {
     script.src = source;
 };
 
-var padVals = function(val) { return (val < 10 ? "0"+val : val)}
+var padVals = function(val) { return (val < 10 ? "0"+val : val);};
 
 // function to get the data for our problem
 app.getProblem = function() {
-	
-	// this feels kinda gross... open to ideas for how to get the same data
-	var today = window.location.href.substring(window.location.href.lastIndexOf('/')+1);
-	if (!today) {
+	// our holder for the requests
+	var request = m.prop([]);
+
+	var checkScriptProblems = function(req) {
+		req.problems.map(function(probs) {
+			if (app.additionalScripts[probs.solution.method]) {
+				getScript(app.additionalScripts[probs.solution.method]);
+			}
+		});
+	};
+
+	// if we define problems (this is currently used for isomorphic testing)
+	if (typeof sha32 !== 'undefined') {
+		request(JSON.parse(window.atob(sha32)));
+		checkScriptProblems(request());
+		return request;
+	} else {
 		var todayDate = new Date();
 		var day = todayDate.getDate();
 		var month = todayDate.getMonth()+1;
 		var year = todayDate.getFullYear();
 		today = year + "-" + padVals(month) + "-" + padVals(day);
 	}
-	var request = m.prop([]);
+
 	m.request({method: "GET", url: "/api/v1/problems/" + today,
 		unwrapError: function(response) {
 			console.log(response.errors);
 			// dailyMath.loadError = response.errors;
 	        return response.errors;
 	    }
-	}).then(request).then(function(req) {
-		req.problems.map(function(probs) {
-			if (app.additionalScripts[probs.solution.method]) {
-				getScript(app.additionalScripts[probs.solution.method]);
-			}
-		});
-	});
+	}).then(request).then(checkScriptProblems);
 	return request;
 };
 
@@ -146,6 +153,10 @@ app.vm.init = function() {
     // used to show/hide a UI element in css
     app.vm.display = function(prop) {
     	if (prop()) { return "block"; } else { return "none"; }
+    };
+
+    app.vm.visibility = function(value) {
+    	if (typeof(value) === "undefined") { return "hidden"; } else { return "visible"; }
     };
 
     // changes between the "high school" and "college" problem (level 1 and 2)

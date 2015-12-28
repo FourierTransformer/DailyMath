@@ -24,13 +24,6 @@ app.view = function(ctrl) {
 	// start with returning the "controls" (aka switch between HS/C and show the problem name)
 	m(".controls",
 		m("h2", app.vm.problem().problems[user.level].name),
-		m("ul", {style: {display: app.vm.display(app.vm.showLevels())}},
-			app.vm.levels.map(function(clevel) {
-				return m("li",
-            		m(clevel.level == user.level ? "span.current" : "button", {onclick: app.vm.changeLevel.bind(ctrl, clevel.level)}, clevel.title)
-        		);
-			})
-		),
 
 		// needed this so this text easily lined up when turning on/off  the level selector
 		m(".postControls", 
@@ -62,16 +55,24 @@ app.view = function(ctrl) {
 	),
 
 	// HINT
-	m(".row#hint",
-		m(".fourth", m("button", {onclick: app.vm.toggle.bind(this, user.showHint), style: {display: app.vm.display(app.vm.showHintBox())}}, user.showHint() ? "Hide Hint" : "Show Hint")),
-		m("p", user.showHint() ? m.trust(renderKatex(app.vm.problem().problems[user.level].hint)) : "")
-	),
+	app.vm.showHintBox()() ?
+	m("table", m("tr",
+		m("td", m("button", {onclick: app.vm.toggle.bind(this, user.showHint)}, user.showHint() ? "Hide Hint" : "Show Hint")),
+		m("td", m("span", user.showHint() ? m.trust(renderKatex(app.vm.problem().problems[user.level].hint)) : ""))
+	)) : "",
 
 	// ANSWER FORM
 	m("form", {onsubmit: ctrl.doNothing.bind(ctrl)}, // meh - gotta make that controller feel special!
 		m("label", {for: "answer"}, "Answer:"),
 		m("input[type=text]", {value: user.answer(), id: "answer", placeholder: "Enter your answer here", autocomplete: "off", onchange: m.withAttr("value", user.answer)}),
 		m("input", { type: "submit", value:"Submit", onclick: app.vm.forceTrue.bind(ctrl, user.showAnswerBox)})
+	),
+
+	m("p.nav", {style: {"text-align": "center"}},
+		m("a.icon-step-backward.button.pseudo", {href: "/p/2015-11-23", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, "First"),
+		m("a.icon-backward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.previous, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, "Prev"),
+		m("a.icon-step-forward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.next, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, "Next"),
+		m("a.icon-forward.button.pseudo", {href: "/", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, "Last")
 	)
 
 	];

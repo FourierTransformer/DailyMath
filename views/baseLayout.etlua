@@ -6,15 +6,16 @@
 	<title><%= title or "PLEASE SET self.title in route" %></title>
 	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/picnicss/4.1.1/picnic.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/style.css">
-	<% if mainPage then %>
+
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
 	<script src="/static/lib/mithril.min.js"></script>
 	<script src="/static/app.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.js"></script>
-	<% end %>
+
 	<% if recaptchaRequired then %>
 		<script src='https://www.google.com/recaptcha/api.js'></script>
 	<% end %>
+
 	<script>
 	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -24,6 +25,7 @@
 	  ga('create', 'UA-70668907-1', 'auto');
 	  ga('send', 'pageview');
 	</script>
+
 </head>
 <body>
 	<div class="header">
@@ -32,12 +34,25 @@
 	<% content_for("inner") %>
 	
 	<div class="footer">
-		<p style="position: absolute;">&copy; 2015 DailyMath<% if mainPage then %><br>Publishes M/W/F<% end %></p>
+		<p style="position: absolute;">&copy; 2015 DailyMath<% if mainPage or isomorphic then %><br>Publishes M/W/F<% end %></p>
 		<ul>
 			<li><a href="/about">About</a></li>
 			<li><a href="/feedback">Feedback</a></li>
 		</ul>
 	</div>
+
+	<% if isomorphic then %>
+	<script type="text/javascript">
+	function loadApp() {
+		m.module(document.getElementById("app"), app);	
+	}
+	if (window.addEventListener)
+	window.addEventListener("load", loadApp, false);
+	else if (window.attachEvent)
+	window.attachEvent("onload", loadApp);
+	else window.onload = loadApp;
+	</script>
+	<% end %>	
 
 </body>
 </html>

@@ -1,3 +1,12 @@
+--[[
+
+    app.lua
+
+    The main code for DailyMath. This guy runs the show!
+
+]]
+
+-- setup lapis and get our configuration
 local lapis = require("lapis")
 local app = lapis.Application()
 local config = require("lapis.config").get()
@@ -14,8 +23,11 @@ else
 	cached = require("lapis.cache").cached
 end
 
--- our utility to load subapps
+-- sometimes you just need to get some stuff
+local resty = require("resty.core.base64")
+local problems = require("util.problems")
 local subApp = require("util.subAppLoader")
+local json = require("cjson")
 
 -- load all our subApps
 local subApps = {
@@ -36,19 +48,21 @@ app:match("/", cached(function(self)
     return { render = "index" }
 end))
 
-app:match("/p/:date", function(self)
-	local date = self.params.date
-	if dateFunctions.verifyFormat(date) == false then
-		self.title = "DailyMath - 404 Not Found"
-		self.errorTitle = "The date is formatted incorrectly"
-		self.errorDetail = "The date in the URL should follow the pattern /p/YYYY-MM-DD."
-		return {status = 404, render = "404"}
-	else
-		self.title = "DailyMath - " .. date
-		self.definedDate = date
-		self.mainPage = true
-		return { render = "index"}
-	end
+-- handle individual problems
+app:get("/p/:date", function(self)
+    self.isomorphic = true
+    local ok, query = problems.getProblem(self.params.date)
+    if ok then
+        self.problem = query.problems[1]
+        self.title = "DailyMath - " .. query.problems[1].name
+        self.date = query.dateInfo
+        self.jsonPayload = ngx.encode_base64(json.encode(query))
+        return { render = "isomorphic" }
+    else
+        self.errorTitle = query.json.errors.title
+        self.errorDetail = query.json.errors.detail
+        return { render = "404" }
+    end
 end)
 
 app:match("about", "/about", cached(function(self)
