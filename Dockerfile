@@ -47,7 +47,7 @@ RUN wget -qO- http://openresty.org/download/ngx_openresty-${OPENRESTY_VERSION}.t
  && ln -sf /opt/openresty/nginx/sbin/nginx /usr/local/bin/nginx \
  && ln -sf /usr/local/bin/nginx /usr/local/bin/openresty \
  && ln -sf /opt/openresty/bin/resty /usr/local/bin/resty \
- && ln -sf /opt/openresty/luajit/bin/luajit-2.1.0-beta /opt/openresty/luajit/bin/lua \
+ && ln -sf /opt/openresty/luajit/bin/luajit-2.1.0-beta1 /opt/openresty/luajit/bin/lua \
  && ln -sf /opt/openresty/luajit/bin/lua /usr/local/bin/lua
 
 # install luarocks
@@ -55,7 +55,7 @@ RUN wget -qO- http://luarocks.org/releases/luarocks-${LUAROCKS_VERSION}.tar.gz |
  && cd /tmp/luarocks-* \
  && ./configure \
     --with-lua=/opt/openresty/luajit/ \
-    --lua-suffix=jit-2.1.0-beta \
+    --lua-suffix=jit-2.1.0-beta1 \
     --with-lua-include=/opt/openresty/luajit/include/luajit-2.1 \
  && make && make install && ldconfig
 
