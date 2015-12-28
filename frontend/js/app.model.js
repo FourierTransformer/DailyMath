@@ -43,7 +43,7 @@ app.getProblem = function() {
 		});
 	};
 
-	// if we define problems (this is currently used for isomorphic testing)
+	// if we define problems (this is currently used for isomorphic js magics)
 	if (typeof sha32 !== 'undefined') {
 		request(JSON.parse(window.atob(sha32)));
 		checkScriptProblems(request());

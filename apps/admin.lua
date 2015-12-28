@@ -281,7 +281,7 @@ admin:post("admin-delete-problem", "/admin/delete-problem/:id", function(self)
 	-- BONUS: if id is invalid, this should bomb out.
 	local date = db.select("date from problems where id = ?", self.params.id)[1].date
 	cache.delete_path("/p/" .. date)
-	cache.delete_path("/api/v1.problems/" .. date)
+	cache.delete_path("/api/v1/problems/" .. date)
 	db.delete("problems", "id = ?", self.params.id)
 
 	return { render = "admin.success" }
