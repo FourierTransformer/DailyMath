@@ -9,8 +9,8 @@
 
 	<% if mainPage then %>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.3.0/katex.min.css">
-	<script async src="/static/lib/mithril.min.js"></script>
-	<script async src="/static/app.js"></script>
+	<script src="/static/lib/mithril.min.js"></script>
+	<script src="/static/app.js"></script>
 	<% end %>
 
 	<% if isomorphic then %>
