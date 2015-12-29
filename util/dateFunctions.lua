@@ -41,6 +41,8 @@ local function checkDate(dateString)
     local year = tonumber(string.sub(dateString, 1, 4))
     local month = tonumber(string.sub(dateString, 6, 7))
     local date = tonumber(string.sub(dateString, 9, 10))
+
+    if month < 1 or month > 12 then return false end;
     
     -- leap years - I tell ya...
     -- I really like how this cascade looks!
@@ -68,7 +70,7 @@ end
 -- ensure that the date is in YYYY-MM-DD format
 function dateFunctions.verifyFormat(dateString)
     local dateObject
-    if dateString:len() == 10 or string.match(dateString, "%d%d%d%d%-%d%d%-%d%d") then
+    if string.match(dateString, "^%d%d%d%d%-%d%d%-%d%d$") then
         if checkDate(dateString) == false then return false end
         dateObject = date(dateString)
         if dateObject == nil then
