@@ -23,6 +23,11 @@ types {
     image/svg+xml                         svg svgz;
     image/webp                            webp;
 
+    font/ttf                              ttf;
+    font/opentype                         otf;
+    application/font-woff                 woff;
+    application/vnd.ms-fontobject         eot;
+
     application/java-archive              jar war ear;
     application/mac-binhex40              hqx;
     application/msword                    doc;
@@ -55,7 +60,6 @@ types {
     application/octet-stream              bin exe dll;
     application/octet-stream              deb;
     application/octet-stream              dmg;
-    application/octet-stream              eot;
     application/octet-stream              iso img;
     application/octet-stream              msi msp msm;
 
