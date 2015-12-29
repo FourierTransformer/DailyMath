@@ -69,10 +69,10 @@ app.view = function(ctrl) {
 	),
 
 	m("p.nav", {style: {"text-align": "center"}},
-		m("a.icon-step-backward.button.pseudo", {href: "/p/2015-11-23", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, "First"),
-		m("a.icon-backward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.previous, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, "Prev"),
-		m("a.icon-step-forward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.next, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, "Next"),
-		m("a.icon-forward.button.pseudo", {href: "/", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, "Last")
+		m("a.icon-step-backward.button.pseudo", {href: "/p/2015-11-23", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, m("span.text", "First")),
+		m("a.icon-backward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.previous, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.previous)}}, m("span.text", "Prev")),
+		m("a.icon-step-forward.button.pseudo", {href: "/p/" + app.vm.problem().dateInfo.next, style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, m("span.text", "Next")),
+		m("a.icon-forward.button.pseudo", {href: "/", style: {visibility: app.vm.visibility(app.vm.problem().dateInfo.next)}}, m("span.text", "Last"))
 	)
 
 	];

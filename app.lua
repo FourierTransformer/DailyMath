@@ -57,6 +57,8 @@ app:get("/p/:date", function(self)
         self.title = "DailyMath - " .. query.problems[1].name
         self.date = query.dateInfo
         self.jsonPayload = ngx.encode_base64(json.encode(query))
+        if query.dateInfo.next then self.next = "visible" else self.next = "hidden" end
+        if query.dateInfo.previous then self.previous = "visible" else self.previous = "hidden" end
         return { render = "isomorphic" }
     else
         self.errorTitle = query.json.errors.title

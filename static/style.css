@@ -73,7 +73,7 @@ body {
 }
 
 #answer {
-	width: 81%;
+	width: 82%;
 }
 
 [class^="icon-"]:before, [class*=" icon-"]:before,
@@ -210,7 +210,7 @@ table {
 		margin: 0 1em;
 	}
 	#answer {
-		width: 75%;
+		width: 69%;
 	}
 	#date {
 		float: left;
@@ -220,8 +220,13 @@ table {
 	#category {
 		display: none;
 	}
-	.nav .button {
-		font-size: .9em;
-		margin: 0 .25em;
+
+	.nav .text {
+		display: none;
+	}
+
+	[class*=" icon-"]:before, [class^=icon-]:before,
+	[class*=" icon-"]:after, [class^=icon-]:after {
+		margin: 0;
 	}
 }
