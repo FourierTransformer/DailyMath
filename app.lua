@@ -49,7 +49,7 @@ app:match("/", cached(function(self)
 end))
 
 -- handle individual problems
-app:get("/p/:date", function(self)
+app:get("/p/:date", cached(function(self)
     self.isomorphic = true
     local ok, query = problems.getProblem(self.params.date)
     if ok then
@@ -57,15 +57,15 @@ app:get("/p/:date", function(self)
         self.title = "DailyMath - " .. query.problems[1].name
         self.date = query.dateInfo
         self.jsonPayload = ngx.encode_base64(json.encode(query))
-        if query.dateInfo.next then self.next = "visible" else self.next = "hidden" end
-        if query.dateInfo.previous then self.previous = "visible" else self.previous = "hidden" end
+        if query.dateInfo.next then self.next = "pseudo" else self.next = "disabled" end
+        if query.dateInfo.previous then self.previous = "pseudo" else self.previous = "disabled" end
         return { render = "isomorphic" }
     else
         self.errorTitle = query.json.errors.title
         self.errorDetail = query.json.errors.detail
         return { render = "404" }
     end
-end)
+end))
 
 app:match("about", "/about", cached(function(self)
 	self.title = "DailyMath - About"

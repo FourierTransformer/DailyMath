@@ -24,10 +24,10 @@ var sha32 = "<%- jsonPayload %>";
 	</form>
 
 	<p class="nav" style="text-align: center;">
-		<a href="/p/2015-11-23" class="icon-step-backward button pseudo" style="visibility: <%- previous %>"><span class="text">First</span></a>
-		<a href="/p/<%- date.previous %>" class="icon-backward button pseudo" style="visibility: <%- previous %>"><span class="text">Prev</span></a>
+		<a href="/p/2015-11-23" class="icon-step-backward button <%- previous %>" disabled><span class="text">First</span></a>
+		<a href="/p/<%- date.previous %>" class="icon-backward button <%- previous %>"><span class="text">Prev</span></a>
 		<!-- <a href="#" class="button pseudo">Random</a> -->
-		<a href="/p/<%- date.next %>" class="icon-forward button pseudo" style="visibility: <%- next %>"><span class="text">Next</span></a>
-		<a href="/" class="icon-step-forward button pseudo" style="visibility: <%- next %>"><span class="text">Last</span></a>
+		<a href="/p/<%- date.next %>" class="icon-forward button <%- next %>"><span class="text">Next</span></a>
+		<a href="/" class="icon-step-forward button <%- next %>"><span class="text">Last</span></a>
 	</p>
 </div>

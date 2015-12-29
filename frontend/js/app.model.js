@@ -156,7 +156,7 @@ app.vm.init = function() {
     };
 
     app.vm.visibility = function(value) {
-    	if (typeof(value) === "undefined") { return "hidden"; } else { return "visible"; }
+    	if (typeof(value) === "undefined") { return ".disabled"; } else { return ".pseudo"; }
     };
 
     // changes between the "high school" and "college" problem (level 1 and 2)
