@@ -10,6 +10,7 @@ local dateFunctions = {}
 local date = require("date")
 
 local months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"}
+local days = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
 local numberEnds = {"st", "nd", "rd"}
 
 -- date will always come in as YYYY-MM-DD
@@ -35,10 +36,40 @@ function dateFunctions.expandDate(dateString)
     return expanded
 end
 
+-- ensure year is valid
+local function checkDate(dateString)
+    local year = tonumber(string.sub(dateString, 1, 4))
+    local month = tonumber(string.sub(dateString, 6, 7))
+    local date = tonumber(string.sub(dateString, 9, 10))
+    
+    -- leap years - I tell ya...
+    -- I really like how this cascade looks!
+    if month == 2 then
+        days[2] = 28
+        if year % 4 == 0 then
+            days[2] = 29
+            if year % 100 == 0 then
+                days[2] = 28
+                if year % 400 == 0 then
+                    days[2] = 29
+                end
+            end
+        end
+    end
+
+    if date <= days[month] then
+        return true
+    end
+
+    return false
+
+end
+
 -- ensure that the date is in YYYY-MM-DD format
 function dateFunctions.verifyFormat(dateString)
     local dateObject
     if dateString:len() == 10 or string.match(dateString, "%d%d%d%d%-%d%d%-%d%d") then
+        if checkDate(dateString) == false then return false end
         dateObject = date(dateString)
         if dateObject == nil then
             return false
@@ -76,6 +107,9 @@ function dateFunctions.validDate(dateString)
         return false
     end
     
+    -- make sure it's before the first problem's date!
+    if selectedDate < date("2015-11-23") then return false end
+
     -- figure out if we should compare today or tomorrow
     local dateToCompare
     local tomorrow, numDays = hasTomorrowOccured()

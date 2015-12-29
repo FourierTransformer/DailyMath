@@ -39,12 +39,12 @@ function problems.getProblem(date, selectLatest)
 
     -- do some quick validation on the date
     if dateFunctions.verifyFormat(date) == false then
-        return false, {status = 404, layout = false, json = jsonError("The date string is not properly formatted", "The date string should follow 'YYYY-MM-DD.'")}
+        return false, {status = 404, layout = false, json = jsonError("The date string is not properly formatted", "The date string should follow 'YYYY-MM-DD' and be a real date on the Gregorian calendar")}
     end
 
     -- ensure that it's within the "today" bounds anywhere around the globe.
     if dateFunctions.validDate(date) == false then
-        return false, {status = 404, layout = false, json = jsonError("That date has not occurred yet", "Valid dates go between 2015-11-23 and today")}
+        return false, {status = 404, layout = false, json = jsonError("That date is not valid", "Valid dates go between 2015-11-23 and today")}
     end
 
     -- query the database!
