@@ -34,6 +34,7 @@ RUN wget -qO- http://openresty.org/download/ngx_openresty-${OPENRESTY_VERSION}.t
     --with-http_stub_status_module \
     --with-http_ssl_module \
     --with-http_realip_module \
+    --with-http_v2_module \
     --without-http_fastcgi_module \
     --without-http_uwsgi_module \
     --without-http_scgi_module \
