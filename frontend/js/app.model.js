@@ -107,7 +107,7 @@ app.vm.init = function() {
 		} catch(e) {}
 		return successful;
 	};
-	app.vm.compare["Numerical Compare"] = function(correctValue, usersValue) {
+	app.vm.compare["String Compare"] = function(correctValue, usersValue) {
 		return app.vm.propy(correctValue == usersValue);
 	};
 
