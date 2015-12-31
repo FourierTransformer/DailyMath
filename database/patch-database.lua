@@ -8,14 +8,14 @@
 
     Note: It'll only patch things for the current major database release. I
     still need to write a script for upgrading major database versions. I'll
-    get to it, when I get to it!
+    get to it when I get to it!
 
     It's somewhat interactive. Call it via:
     lua patch-database.lua [DATABASE]
 
 ]]
 
--- see if peeps are asking for help
+-- see if peeps are asking for help (also haxxxxxx)
 if arg[1] == "-h" or arg[1] == "--help" then print("lua patch-database.lua [DATABASE]") return end
 
 -- setup the configuration
@@ -30,7 +30,7 @@ if not config.database then print("Please pass in a database name: lua patch-dat
 -- local json = require("cjson")
 
 -- LOGGING YO
-file = io.open(os.date("%F") .. "--" .. os.date("%X"):gsub(":", "_") .. ".log", "a")
+file = io.open(config.database .. "-patch-" ..os.date("%F") .. "-" .. os.date("%X"):gsub(":", "_") .. ".log", "a")
 io.output(file)
 
 -- this is a little dicey! But writing a logfile is a must!
@@ -134,7 +134,7 @@ for i = 3, #outTable do --skips the first row of field names and the second row 
 	end
 end
 
--- show the change history and get major release nubmber
+-- show the change history and get major release number
 print("\nSchema Change History")
 local majorRelease = -math.huge
 for i = 1, #versions do
@@ -210,8 +210,10 @@ if applyPatches then
 			print("\nAn error was found while trying to add the version info to the database... This shouldn't happen. File a bug at http://github.com/FourierTransformer/DailyMath\n")
 			return
 		end
-		print("\nPatching Completed Successfully!\n")
+		print("\nPatch " .. scriptToApply[i] .. " applied successfully!\n")
 	end
 else
 	print("\nYou have elected to not patch. Exiting.\n")
 end
+
+print("\nPatching Completed Successfully!\n")
