@@ -6,6 +6,7 @@ var app = {};
 app.additionalScripts = {};
 app.additionalScripts["Duration Compare"] = "/static/lib/juration.js";
 app.additionalScripts["Byte Compare"] = "/static/lib/nattybytes.js";
+app.additionalScripts["MathJS Compare"] = "https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js";
 
 // download additional scripts if need be
 // found somewhere on stack overflow as a non-jquery async script loader
@@ -110,6 +111,13 @@ app.vm.init = function() {
 		return app.vm.propy(correctValue == usersValue);
 	};
 
+	app.vm.compare["MathJS Compare"] = function(correctValue, usersValue) {
+		var successful = m.prop(false);
+		try {
+			successful(math.compare(math.eval(correctValue), math.eval(usersValue)) === 0);
+		} catch(e) {}
+		return successful;
+	};
 
 	// getting SUPERDRY now.
 	// NOTE: this also works with truthy/falsey

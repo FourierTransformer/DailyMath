@@ -43,7 +43,7 @@ app.view = function(ctrl) {
 				m("p", user.answer() + " is correct! " + (app.vm.problem().problems[user.level].correct_message ? app.vm.problem().problems[user.level].correct_message : "New problems every Monday, Wednesday, and Friday!"))
 			)
     		: m("#incorrect",
-				m("h3", user.showAnswer() ? "Answer: " + app.vm.problem().problems[user.level].solution.answer : "Sorry, that's not correct!"),
+				m("h3", user.showAnswer() ? "Answer: " + app.vm.problem().problems[user.level].solution.answer : "Sorry, " + user.answer() + " is not correct!"),
 				m(".buttons",
 					m("button#try", {onclick: app.vm.toggle.bind(this, user.showAnswerBox)}, "Try Again"),
 					m("button.error",  {style: {display: app.vm.display(app.vm.opposite(user.showAnswer))}, onclick: app.vm.forceTrue.bind(this, user.showAnswer)}, "Show Answer"),
