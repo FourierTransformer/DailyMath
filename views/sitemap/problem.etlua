@@ -1,0 +1,5 @@
+<url>
+        <loc><%= url %></loc>
+        <changefreq>never</changefreq>
+        <priority>0.8</priority>
+    </url>

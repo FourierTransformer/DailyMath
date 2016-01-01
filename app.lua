@@ -31,9 +31,10 @@ local json = require("cjson")
 
 -- load all our subApps
 local subApps = {
-    require("apps.feedback"),
     require("apps.api"),
-    require("apps.admin")
+    require("apps.admin"),
+    require("apps.feedback"),
+    require("apps.sitemap")
 }
 subApp.loadSubApps(app, subApps)
 
