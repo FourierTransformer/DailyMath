@@ -108,13 +108,14 @@ app.vm.init = function() {
 		return successful;
 	};
 	app.vm.compare["String Compare"] = function(correctValue, usersValue) {
-		return app.vm.propy(correctValue == usersValue);
+		return app.vm.propy(correctValue.toLowerCase() == usersValue.toLowerCase());
 	};
 
 	app.vm.compare["MathJS Compare"] = function(correctValue, usersValue) {
 		var successful = m.prop(false);
+		round = function(val) { return math.eval(math.format(math.eval(val), {precision: 5}));};
 		try {
-			successful(math.compare(math.eval(correctValue), math.eval(usersValue)) === 0);
+			successful(math.compare(round(correctValue), round(usersValue)) === 0);
 		} catch(e) {}
 		return successful;
 	};
