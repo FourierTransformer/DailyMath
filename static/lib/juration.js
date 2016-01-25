@@ -59,7 +59,10 @@
   };
   
   var parse = function(string) {
-    
+    if (string.startsWith(".")) {
+      string = "0" + string;
+    }
+
     // returns calculated values separated by spaces
     for(var unit in UNITS) {
       for(var i = 0, mLen = UNITS[unit].patterns.length; i < mLen; i++) {
